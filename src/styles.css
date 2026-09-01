@@ -1,0 +1,286 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-paper text-ink font-body antialiased;
+    font-size: 18px;
+    line-height: 1.65;
+    font-synthesis-weight: none;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-display;
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+    font-weight: 600;
+  }
+
+  a {
+    color: inherit;
+  }
+
+  :focus-visible {
+    outline: 2px solid theme("colors.signal");
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background: theme("colors.signal");
+    color: theme("colors.paper");
+  }
+}
+
+@layer components {
+  /* small technical labels, used only on data and diagram parts */
+  .tag {
+    @apply font-mono text-[11px] leading-none text-graphite;
+    letter-spacing: 0.04em;
+  }
+
+  .measure {
+    max-width: 62ch;
+  }
+
+  .link {
+    @apply text-signal;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+    text-decoration-color: rgba(27, 58, 199, 0.35);
+    transition: text-decoration-color 150ms ease;
+  }
+  .link:hover,
+  .link:focus-visible {
+    text-decoration-color: currentColor;
+  }
+
+  .btn {
+    @apply font-mono text-[12px] text-signal border border-signal/40 rounded px-3 py-2 leading-none;
+    background: transparent;
+    transition: background-color 150ms ease, border-color 150ms ease;
+  }
+  .btn:hover,
+  .btn:focus-visible {
+    background: rgba(27, 58, 199, 0.07);
+    border-color: theme("colors.signal");
+  }
+
+  /* faint drafting grid, used only on diagram bands */
+  .grid-band {
+    background-image: linear-gradient(
+        to right,
+        rgba(18, 21, 26, 0.045) 1px,
+        transparent 1px
+      ),
+      linear-gradient(to bottom, rgba(18, 21, 26, 0.045) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+}
+
+/* ---- motion -------------------------------------------------------------- */
+/* The only non user motion on the page: diagrams draw themselves once, on
+   first entry. Text never animates in. */
+
+.draw path,
+.draw line,
+.draw polyline,
+.draw circle {
+  stroke-dasharray: var(--len, 400);
+  stroke-dashoffset: var(--len, 400);
+}
+
+.draw.is-in path,
+.draw.is-in line,
+.draw.is-in polyline,
+.draw.is-in circle {
+  animation: draw 900ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.count {
+  transition: opacity 400ms ease;
+}
+
+/* ---- orbit --------------------------------------------------------------- */
+/* The one continuous motion on the page, and the one dark panel. It stops when
+   a person hovers, taps or focuses it, and reduced motion stops it outright. */
+
+.orbit-night {
+  background: transparent;
+  color: inherit;
+}
+
+.orbit-wrap {
+  display: none;
+}
+
+.orbit-field {
+  position: relative;
+  width: 620px;
+  height: 620px;
+  flex: none;
+  display: grid;
+  place-items: center;
+}
+
+@media (min-width: 768px) {
+  .orbit-wrap {
+    display: flex;
+    height: 600px;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+}
+
+.orbit-track {
+  position: absolute;
+  border: 1px dashed rgba(18, 21, 26, 0.18);
+  border-radius: 9999px;
+}
+
+.orbit-centre {
+  position: absolute;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 90px;
+  height: 90px;
+  border-radius: 9999px;
+  background: theme("colors.orb.rust");
+  color: #F5F5F0;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 14px;
+}
+
+.orbit-ring {
+  position: absolute;
+  inset: 0;
+  animation: orbit-spin var(--dur, 90s) linear infinite;
+}
+
+.orbit-slot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+
+.orbit-node {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: var(--size, 80px);
+  height: var(--size, 80px);
+  margin: calc(var(--size, 80px) / -2) 0 0 calc(var(--size, 80px) / -2);
+  border-radius: 9999px;
+  background: var(--fill, #3A5BD9);
+  color: #F5F5F0;
+  text-align: center;
+  line-height: 1.15;
+  padding: 0 8px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  letter-spacing: -0.01em;
+  animation: orbit-counter var(--dur, 90s) linear infinite;
+  transition: transform 200ms ease;
+  cursor: default;
+}
+
+.orbit-node:hover,
+.orbit-node:focus-visible {
+  transform: rotate(var(--angle, 0deg)) scale(1.12);
+}
+
+/* stopping the sky: only when toggled off via button */
+.orbit-field[data-running="false"] .orbit-ring,
+.orbit-field[data-running="false"] .orbit-node {
+  animation-play-state: paused;
+}
+
+@keyframes orbit-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes orbit-counter {
+  from {
+    transform: rotate(var(--angle, 0deg));
+  }
+  to {
+    transform: rotate(calc(var(--angle, 0deg) - 360deg));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .draw path,
+  .draw line,
+  .draw polyline,
+  .draw circle {
+    stroke-dashoffset: 0 !important;
+    animation: none !important;
+  }
+  .orbit-ring,
+  .orbit-node {
+    animation: none !important;
+  }
+  * {
+    transition-duration: 1ms !important;
+    animation-duration: 1ms !important;
+  }
+}
+
+/* ---- hero animations ----------------------------------------------------- */
+
+@keyframes blob {
+  0% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(8vw, -8vh) scale(1.15); }
+  66% { transform: translate(-6vw, 6vh) scale(0.85); }
+  100% { transform: translate(0px, 0px) scale(1); }
+}
+
+.animate-blob {
+  animation: blob 8s infinite alternate ease-in-out;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee 25s linear infinite;
+}
+
+.animate-marquee-reverse {
+  animation: marquee 30s linear infinite reverse;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
