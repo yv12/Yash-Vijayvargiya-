@@ -52,7 +52,6 @@ export function Draw({
 
 export function Chapter({
   id,
-  number,
   title,
   children,
 }: {
@@ -60,6 +59,7 @@ export function Chapter({
   number: string;
   title: string;
   children: ReactNode;
+  band?: boolean;
 }) {
   const tone = TONE[chapters.find((c) => c.id === id)?.tone ?? "sand"];
   return (

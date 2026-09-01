@@ -1,6 +1,6 @@
 import { Chapter, Note, P } from "../ui";
 import { SkillOrbit } from "../visuals";
-import { chapters, contact, direction, meta, skills, systems } from "../content";
+import { chapters, direction, skills, systems } from "../content";
 
 const ch = (id: string) => chapters.find((c) => c.id === id)!;
 
@@ -93,36 +93,3 @@ export function Direction() {
   );
 }
 
-/* ------------------------------------------------------------------ ch. 14 */
-
-export function Closing() {
-  const c = ch("closing");
-  const links = [
-    contact.email ? { label: "Email", href: `mailto:${contact.email}` } : null,
-    contact.linkedin ? { label: "LinkedIn", href: contact.linkedin } : null,
-    contact.github ? { label: "GitHub", href: contact.github } : null,
-    contact.resumeUrl ? { label: "Resume", href: contact.resumeUrl } : null,
-  ].filter(Boolean) as { label: string; href: string }[];
-
-  return (
-    <Chapter id={c.id} number={c.number} title={c.title}>
-      <P>{contact.closing}</P>
-
-      <div className="mt-10 flex flex-wrap gap-3">
-        {links.map((l) => (
-          <a
-            key={l.label}
-            className="btn"
-            href={l.href}
-            target={l.href.startsWith("mailto:") ? undefined : "_blank"}
-            rel="noreferrer"
-          >
-            {l.label}
-          </a>
-        ))}
-      </div>
-
-
-    </Chapter>
-  );
-}

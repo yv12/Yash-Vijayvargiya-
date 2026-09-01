@@ -10,7 +10,6 @@
  *    and hairline, with signal used on the one mark that carries the point
  */
 
-import { useState } from "react";
 import { Draw, useInView } from "./ui";
 import { between, lenses, orbit } from "./content";
 

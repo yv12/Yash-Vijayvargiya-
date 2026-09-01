@@ -9,7 +9,7 @@ import {
   Principles,
 } from "./chapters/Story";
 import { Blinkit, Ocr, Build, Hdfc, Fraud } from "./chapters/Work";
-import { Systems, Direction, Closing } from "./chapters/Close";
+import { Systems, Direction } from "./chapters/Close";
 import { Navigation } from "./components/Navigation";
 import { Footer } from "./components/Footer";
 
