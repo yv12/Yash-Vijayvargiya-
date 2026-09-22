@@ -295,12 +295,28 @@ export const ocr = {
 
 /* ------------------------------------------------------------------ ch. 09 */
 
+export const VALID_PROJECT_SLUGS = [
+  "blinkit",
+  "blinkit-discovery",
+  "blinkit-swipe",
+  "hdfc",
+  "fraud",
+  "ocr",
+  "call-audit",
+  "insurance-policy",
+  "handwritten-record",
+  "hr-onboarding",
+] as const;
+
+export type ProjectSlug = typeof VALID_PROJECT_SLUGS[number];
+
 export type Artifact = {
   name: string;
   kind: "Professional" | "Fellowship" | "Personal";
   line: string;
   stack: string;
   href?: string;
+  slug?: ProjectSlug;
   image?: string; // TODO(yash): drop screenshots into /public/shots and reference them here
 };
 
@@ -311,6 +327,7 @@ export const artifacts: Artifact[] = [
     line: "Answers questions on five schemes, only from the official documents.",
     stack: "FastAPI, Qdrant, Groq, citation validator",
     href: "https://hdfc-mutual-fund-faq-groww.vercel.app/",
+    slug: "hdfc",
   },
   {
     name: "Fraud scoring pipeline",
@@ -318,6 +335,7 @@ export const artifacts: Artifact[] = [
     line: "A full model lifecycle with a promotion rule that can say no.",
     stack: "DuckDB, MLflow, FastAPI, Evidently",
     href: "https://fraud-ops-pipeline-production.up.railway.app/",
+    slug: "fraud",
   },
   {
     name: "Quick commerce discovery engine",
@@ -325,6 +343,7 @@ export const artifacts: Artifact[] = [
     line: "156,219 reviews clustered into themes tied to a funnel stage.",
     stack: "Embeddings, kNN, Louvain, hybrid classifier",
     href: "https://blinkit-ai-discovery-engine-91md.vercel.app/",
+    slug: "blinkit-discovery",
   },
   {
     name: "Cross category swipe MVP",
@@ -332,30 +351,35 @@ export const artifacts: Artifact[] = [
     line: "A recommendation ladder delivered as three swipeable cards.",
     stack: "React, Groq llama-3.3-70b at runtime",
     href: "https://blinkit-iota-ruddy.vercel.app",
+    slug: "blinkit-swipe",
   },
   {
     name: "Call quality audit system",
     kind: "Professional",
     line: "Coaching calls transcribed, scored against a 70 point rubric, reported back to the owner.",
     stack: "Transcript processing, scoring prompts, Airtable",
+    slug: "call-audit",
   },
   {
     name: "Insurance policy assistant",
     kind: "Professional",
     line: "Policy questions answered from one provider's documents at a time, across 110 providers.",
     stack: "RAG, intent classification, retrieval thresholds",
+    slug: "insurance-policy",
   },
   {
     name: "Handwritten record digitisation",
     kind: "Professional",
     line: "Unreadable regions preserved as images instead of guessed.",
     stack: "PaddleOCR, confidence routing, review queue",
+    slug: "handwritten-record",
   },
   {
     name: "HR onboarding automation",
     kind: "Professional",
     line: "One trigger sets up a new joiner across every system they need.",
     stack: "n8n, HR and directory integrations",
+    slug: "hr-onboarding",
   },
 ];
 

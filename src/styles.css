@@ -245,6 +245,14 @@
   .orbit-node {
     animation: none !important;
   }
+  .story-parallax-num,
+  .pull-quote,
+  .work-shift-container,
+  .vision-drift-orb,
+  .vision-loop-wrap g {
+    transform: none !important;
+    transition: none !important;
+  }
   * {
     transition-duration: 1ms !important;
     animation-duration: 1ms !important;
@@ -284,3 +292,572 @@
 .animation-delay-4000 {
   animation-delay: 4s;
 }
+
+/* ---- section header band ------------------------------------------ */
+
+.section-header-band {
+  border-top: 3px solid;
+  border-bottom: 1px solid rgba(18, 21, 26, 0.10);
+  background: rgba(234, 236, 231, 0.60);
+  backdrop-filter: blur(4px);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+.section-header-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  flex-shrink: 0;
+}
+
+.section-header-label {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.section-header-meta {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  color: #5F6873;
+  letter-spacing: 0.02em;
+}
+
+/* ---- 2000s RGB Lights UI/UX for Live Project Links -------------- */
+
+.launch-link-rgb {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 9999px;
+  font-family: "IBM Plex Mono", monospace;
+  font-weight: 700;
+  color: #FFFFFF !important;
+  background: #0F141C;
+  text-decoration: none;
+  overflow: hidden;
+  box-shadow: 0 0 12px rgba(255, 0, 100, 0.45), 
+              0 0 22px rgba(0, 240, 255, 0.35), 
+              inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  border: 2px solid transparent;
+  transition: transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 160ms ease;
+  z-index: 1;
+}
+
+/* 2000s Rotating RGB chasing border animation */
+.launch-link-rgb::before {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 9999px;
+  background: conic-gradient(
+    #FF0055, 
+    #FF8800, 
+    #FFEE00, 
+    #00FF66, 
+    #00F0FF, 
+    #7B00FF, 
+    #FF00AA, 
+    #FF0055
+  );
+  z-index: -2;
+  animation: rgb-spin 3.2s linear infinite;
+}
+
+/* Inner dark chassis */
+.launch-link-rgb::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border-radius: 9999px;
+  background: linear-gradient(180deg, #1C232E 0%, #0D1219 100%);
+  z-index: -1;
+  transition: background 150ms ease;
+}
+
+@keyframes rgb-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 2000s Gel gloss sheen across top half */
+.rgb-gloss-sheen {
+  position: absolute;
+  top: 1px;
+  left: 10%;
+  right: 10%;
+  height: 46%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.38) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border-radius: 9999px 9999px 40px 40px;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* 2000s Pulsing RGB LED indicator dot */
+.rgb-led-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: #00FF66;
+  box-shadow: 0 0 6px #00FF66, 0 0 12px #00FF66;
+  animation: rgb-led-pulse 1.4s ease-in-out infinite;
+  z-index: 10;
+}
+
+@keyframes rgb-led-pulse {
+  0%, 100% {
+    background: #00FF66;
+    box-shadow: 0 0 6px #00FF66, 0 0 12px #00FF66;
+    transform: scale(0.95);
+  }
+  33% {
+    background: #00F0FF;
+    box-shadow: 0 0 10px #00F0FF, 0 0 18px #00F0FF;
+    transform: scale(1.15);
+  }
+  66% {
+    background: #FF0077;
+    box-shadow: 0 0 10px #FF0077, 0 0 18px #FF0077;
+    transform: scale(1.1);
+  }
+}
+
+/* Hover attract flare */
+.launch-link-rgb:hover,
+.launch-link-rgb:focus-visible {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 0 22px rgba(0, 240, 255, 0.65), 
+              0 0 38px rgba(255, 0, 128, 0.55), 
+              0 0 55px rgba(0, 255, 100, 0.35);
+}
+
+.launch-link-rgb:hover::after {
+  background: linear-gradient(180deg, #252F3D 0%, #131A24 100%);
+}
+
+.launch-link-rgb:active {
+  transform: translateY(0px) scale(0.98);
+}
+
+.launch-link-sm {
+  font-size: 11px;
+  padding: 6px 14px;
+}
+
+.launch-link-md {
+  font-size: 13px;
+  padding: 9px 20px;
+}
+
+.launch-link-lg {
+  font-size: 15px;
+  padding: 13px 28px;
+}
+
+.launch-link-icon {
+  flex-shrink: 0;
+  color: #00F0FF;
+  transition: transform 150ms ease, color 150ms ease;
+}
+
+.launch-link-rgb:hover .launch-link-icon,
+.launch-link-rgb:focus-visible .launch-link-icon {
+  transform: translate(2px, -2px);
+  color: #FFEE00;
+}
+
+/* ---- pull quote --------------------------------------------------- */
+
+.pull-quote {
+  max-width: 62ch;
+  margin: 2rem auto 0;
+  padding: 1rem 1.5rem;
+  border-left: 3px solid;
+  background: rgba(255,255,255,0.45);
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: clamp(19px, 2.2vw, 24px);
+  font-weight: 600;
+  line-height: 1.3;
+  color: #12151A;
+  text-align: left;
+  font-style: normal;
+}
+
+/* ---- story variant ------------------------------------------------ */
+
+.chapter-variant-story {
+  /* Subtle warm paper texture illusion via repeating line */
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 27px,
+    rgba(180, 160, 120, 0.06) 28px
+  );
+}
+
+/* large decorative chapter number behind the title */
+.story-chapter-num {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: clamp(80px, 15vw, 160px);
+  font-weight: 700;
+  line-height: 1;
+  color: rgba(163, 55, 38, 0.07);
+  letter-spacing: -0.04em;
+  user-select: none;
+  pointer-events: none;
+  position: absolute;
+  top: -0.2em;
+  left: 0;
+}
+
+.story-chapter-wrap {
+  position: relative;
+}
+
+/* ---- work variant ------------------------------------------------- */
+
+/* Jump navigation at top of /work */
+.work-jump-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 20px 0 4px;
+}
+
+.work-jump-pill {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 5px 12px;
+  border: 1px solid rgba(18, 21, 26, 0.18);
+  border-radius: 100px;
+  background: rgba(255,255,255,0.55);
+  color: #5F6873;
+  text-decoration: none;
+  transition: border-color 120ms ease, color 120ms ease, background 120ms ease;
+}
+
+.work-jump-pill:hover,
+.work-jump-pill:focus-visible {
+  border-color: #1B3AC7;
+  color: #1B3AC7;
+  background: rgba(27, 58, 199, 0.06);
+}
+
+/* Dossier-style project header */
+.dossier-header {
+  width: 100%;
+  max-width: 760px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  gap: 6px;
+  margin-bottom: 2rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid rgba(18, 21, 26, 0.12);
+}
+
+.dossier-kind-badge {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid;
+}
+
+/* ---- vision variant ----------------------------------------------- */
+
+.chapter-variant-vision {
+  position: relative;
+}
+
+.chapter-variant-vision::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 60% 40%, rgba(31, 92, 88, 0.10) 0%, transparent 70%),
+              radial-gradient(ellipse at 20% 80%, rgba(27, 58, 199, 0.06) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.chapter-variant-vision > div {
+  position: relative;
+  z-index: 1;
+}
+
+/* Circular vision loop diagram */
+.vision-loop-wrap {
+  position: relative;
+  width: min(440px, 90vw);
+  height: min(440px, 90vw);
+  margin: 3rem auto 0;
+  flex-shrink: 0;
+}
+
+.vision-loop-svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ---- expandable principle card ------------------------------------ */
+
+.principle-card {
+  background: rgba(255,255,255,0.55);
+  border: 1px solid rgba(18, 21, 26, 0.12);
+  border-top: 3px solid;
+  padding: 1.25rem 1.5rem;
+  cursor: pointer;
+  text-align: left;
+  transition: box-shadow 150ms ease, transform 150ms ease;
+  width: 100%;
+}
+
+.principle-card:hover {
+  box-shadow: 0 4px 20px rgba(18, 21, 26, 0.08);
+  transform: translateY(-1px);
+}
+
+.principle-card-num {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+}
+
+.principle-card-rule {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #12151A;
+  margin-top: 0.5rem;
+}
+
+.principle-card-body {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #5F6873;
+  margin-top: 0.75rem;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 280ms ease, opacity 240ms ease, margin-top 200ms ease;
+}
+
+.principle-card[data-open="true"] .principle-card-body {
+  max-height: 200px;
+  opacity: 1;
+  margin-top: 0.75rem;
+}
+
+.principle-card-chevron {
+  display: inline-block;
+  margin-left: auto;
+  transition: transform 240ms ease;
+  color: var(--accent);
+}
+
+.principle-card[data-open="true"] .principle-card-chevron {
+  transform: rotate(180deg);
+}
+
+/* ---- story scroll motion: parallax & spine ----------------------- */
+
+.story-parallax-num {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: clamp(90px, 16vw, 180px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  user-select: none;
+  pointer-events: none;
+  position: absolute;
+  top: 1rem;
+  right: 2rem;
+  opacity: 0.07;
+  z-index: 0;
+  will-change: transform;
+  transition: transform 60ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@media (min-width: 1024px) {
+  .story-parallax-num {
+    right: 4rem;
+    top: 1.5rem;
+  }
+}
+
+.story-spine-nav {
+  position: fixed;
+  left: 1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 40;
+  display: none;
+  align-items: center;
+  gap: 12px;
+}
+
+@media (min-width: 1280px) {
+  .story-spine-nav {
+    display: flex;
+  }
+}
+
+.story-spine-track {
+  width: 2px;
+  height: 160px;
+  background: rgba(18, 21, 26, 0.12);
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
+}
+
+.story-spine-fill {
+  width: 100%;
+  background: #A33726;
+  border-radius: 2px;
+  transition: height 80ms linear;
+}
+
+.story-spine-stops {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 170px;
+}
+
+.story-spine-stop {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  opacity: 0.5;
+  transition: opacity 150ms ease, transform 150ms ease;
+}
+
+.story-spine-stop:hover {
+  opacity: 1;
+  transform: translateX(2px);
+}
+
+.story-spine-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #A33726;
+}
+
+.story-spine-label {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+  font-weight: 600;
+  color: #12151A;
+  white-space: nowrap;
+}
+
+/* ---- work scroll motion: bilateral shift & telemetry HUD --------- */
+
+.work-shift-container {
+  width: 100%;
+  will-change: transform;
+  transition: transform 60ms cubic-bezier(0.1, 0.9, 0.2, 1);
+}
+
+.work-telemetry-hud {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 50;
+  pointer-events: none;
+}
+
+.work-telemetry-panel {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(27, 58, 199, 0.25);
+  box-shadow: 0 8px 30px rgba(18, 21, 26, 0.08);
+  border-radius: 8px;
+  padding: 10px 14px;
+  min-width: 175px;
+}
+
+.work-telemetry-pulse {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: #1B3AC7;
+  box-shadow: 0 0 6px #1B3AC7;
+  animation: pulse-dot 1.8s infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.8); }
+}
+
+.work-telemetry-track {
+  width: 100%;
+  height: 3px;
+  background: rgba(27, 58, 199, 0.12);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.work-telemetry-fill {
+  height: 100%;
+  background: #1B3AC7;
+  transition: width 60ms linear;
+}
+
+/* ---- vision scroll motion: celestial drift & loop ---------------- */
+
+.vision-drift-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.vision-drift-orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  will-change: transform;
+  transition: transform 80ms linear;
+}
+
+.vision-drift-orb-1 {
+  top: 10%;
+  right: 5%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(31, 92, 88, 0.14) 0%, rgba(31, 92, 88, 0.02) 60%, transparent 75%);
+  filter: blur(50px);
+}
+
+.vision-drift-orb-2 {
+  top: 55%;
+  left: 2%;
+  width: 460px;
+  height: 460px;
+  background: radial-gradient(circle, rgba(27, 58, 199, 0.10) 0%, rgba(27, 58, 199, 0.01) 60%, transparent 75%);
+  filter: blur(50px);
+}
+
+

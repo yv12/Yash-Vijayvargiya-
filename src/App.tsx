@@ -7,11 +7,14 @@ import {
   Rag,
   Speed,
   Principles,
+  StoryHeader,
 } from "./chapters/Story";
-import { Blinkit, Ocr, Build, Hdfc, Fraud } from "./chapters/Work";
-import { Systems, Direction } from "./chapters/Close";
+import { Blinkit, Ocr, Build, Hdfc, Fraud, WorkHeader } from "./chapters/Work";
+import { Systems, Direction, VisionHeader } from "./chapters/Close";
 import { Navigation } from "./components/Navigation";
 import { Footer } from "./components/Footer";
+import { PrivacyPage } from "./components/PrivacyNotice";
+import { AdminDashboard } from "./components/AdminDashboard";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -21,41 +24,56 @@ function ScrollToTop() {
   return null;
 }
 
+function MainLayout() {
+  const { pathname } = useLocation();
+  const isAdminRoute = pathname.startsWith("/admin") || pathname.startsWith("/dashboard");
+
+  return (
+    <main>
+      {!isAdminRoute && <Navigation />}
+      <Routes>
+        <Route path="/" element={<Opening />} />
+        <Route path="/story" element={
+          <>
+            <StoryHeader />
+            <Between />
+            <RealProblem />
+            <Rag />
+            <Speed />
+            <Principles />
+          </>
+        } />
+        <Route path="/work" element={
+          <>
+            <WorkHeader />
+            <Blinkit />
+            <Ocr />
+            <Build />
+            <Hdfc />
+            <Fraud />
+          </>
+        } />
+        <Route path="/vision" element={
+          <>
+            <VisionHeader />
+            <Systems />
+            <Direction />
+          </>
+        } />
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/dashboard" element={<AdminDashboard />} />
+      </Routes>
+      {!isAdminRoute && <Footer />}
+    </main>
+  );
+}
+
 export default function App() {
   return (
     <Router>
       <ScrollToTop />
-      <main>
-        <Navigation />
-        <Routes>
-          <Route path="/" element={<Opening />} />
-          <Route path="/story" element={
-            <>
-              <Between />
-              <RealProblem />
-              <Rag />
-              <Speed />
-              <Principles />
-            </>
-          } />
-          <Route path="/work" element={
-            <>
-              <Blinkit />
-              <Ocr />
-              <Build />
-              <Hdfc />
-              <Fraud />
-            </>
-          } />
-          <Route path="/vision" element={
-            <>
-              <Systems />
-              <Direction />
-            </>
-          } />
-        </Routes>
-        <Footer />
-      </main>
+      <MainLayout />
     </Router>
   );
 }
