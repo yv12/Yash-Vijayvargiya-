@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { chapters, TONE } from "./content";
-import { useElementScrollProgress } from "./hooks/useScrollMotion";
+
 import { trackProjectClick } from "./hooks/useClickTracking";
 
 /* ------------------------------------------------------------ in view hook */
@@ -70,8 +70,8 @@ export function SectionHeader({
       className="section-header-band"
       style={{ borderColor: accent, "--sh-accent": accent } as React.CSSProperties}
     >
-      <div className="mx-auto max-w-page px-6 sm:px-10 lg:px-16 py-4 flex items-center justify-between gap-4 flex-wrap">
-        <div className="flex items-center gap-4 pl-28 sm:pl-36">
+      <div className="mx-auto max-w-page px-4 sm:px-10 lg:px-16 py-2.5 sm:py-3.5 flex items-center justify-between gap-3 sm:gap-4 flex-wrap">
+        <div className="flex items-center gap-2.5 sm:gap-3.5 pl-20 sm:pl-28 md:pl-32">
           <span
             className="section-header-dot"
             style={{ background: accent }}
@@ -80,16 +80,18 @@ export function SectionHeader({
             {label}
           </span>
         </div>
-        <span className="section-header-meta">{metaText}</span>
+        <span className="section-header-meta text-[10px] sm:text-[11px] hidden xs:inline-block truncate max-w-[220px] sm:max-w-none">
+          {metaText}
+        </span>
       </div>
     </div>
   );
 }
 
-/* --------------------------------------------------------- launch link CTA */
-
 /**
- * 2000s RGB Lights Live Launch Link — animated neon chromatic chase lights that grab attention.
+ * Aesthetic 90s Tactile Hardware Button — authentic beveled keycap,
+ * glowing phosphor status jewel LED lamp, mechanical press depth, and crisp monospace typography.
+ * Attracts attention through tactile realism without being oversized.
  */
 export function LaunchLink({
   href,
@@ -106,10 +108,11 @@ export function LaunchLink({
 }) {
   const sizeClass =
     size === "lg"
-      ? "launch-link-lg"
+      ? "retro-btn-lg"
       : size === "sm"
-      ? "launch-link-sm"
-      : "launch-link-md";
+      ? "retro-btn-sm"
+      : "retro-btn-md";
+
   return (
     <a
       href={href}
@@ -120,36 +123,39 @@ export function LaunchLink({
           trackProjectClick(trackingSlug);
         }
       }}
-      className={`launch-link launch-link-rgb ${sizeClass}`}
+      className={`retro-90s-btn ${sizeClass}`}
       style={
         {
-          "--ll-accent": accent,
+          "--retro-accent": accent,
         } as React.CSSProperties
       }
     >
-      {/* 2000s RGB chromatic aura border */}
-      <span className="rgb-border-glow" aria-hidden="true" />
-      {/* 2000s Pulsing RGB LED Indicator */}
-      <span className="rgb-led-indicator" aria-hidden="true" />
-      <span className="relative z-10 font-bold tracking-tight">{children}</span>
-      <svg
-        width="14"
-        height="14"
-        viewBox="0 0 14 14"
-        fill="none"
-        aria-hidden="true"
-        className="launch-link-icon relative z-10"
-      >
-        <path
-          d="M2 12L12 2M12 2H6M12 2V8"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-      {/* 2000s glossy glass highlight */}
-      <span className="rgb-gloss-sheen" aria-hidden="true" />
+      {/* 90s Phosphor Jewel LED indicator */}
+      <span className="retro-led-housing" aria-hidden="true">
+        <span className="retro-led-core" />
+      </span>
+
+      {/* Button label */}
+      <span className="retro-btn-text">{children}</span>
+
+      {/* 90s Mechanical action arrow */}
+      <span className="retro-btn-arrow" aria-hidden="true">
+        <svg
+          width="12"
+          height="12"
+          viewBox="0 0 12 12"
+          fill="none"
+          className="retro-arrow-icon"
+        >
+          <path
+            d="M2.5 9.5L9.5 2.5M9.5 2.5H4.5M9.5 2.5V7.5"
+            stroke="currentColor"
+            strokeWidth="1.75"
+            strokeLinecap="square"
+            strokeLinejoin="miter"
+          />
+        </svg>
+      </span>
     </a>
   );
 }
@@ -175,18 +181,18 @@ export function Chapter({
     <section
       id={id}
       aria-labelledby={`${id}-title`}
-      className={`scroll-mt-16 ${tone.bg} ${variantClass} relative overflow-hidden`}
+      className={`scroll-mt-12 sm:scroll-mt-16 ${tone.bg} ${variantClass} relative overflow-hidden`}
       style={{ ["--accent" as string]: tone.accent }}
     >
-      <div className="relative z-10 mx-auto max-w-page px-6 py-20 sm:px-10 md:py-28 lg:px-16 flex flex-col items-center text-center">
+      <div className="relative z-10 mx-auto max-w-page px-4 py-14 sm:px-10 md:py-28 lg:px-16 flex flex-col items-center text-center">
 
         <h2
           id={`${id}-title`}
-          className="measure text-[32px] sm:text-[40px] md:text-[48px]"
+          className="measure text-[26px] xs:text-[32px] sm:text-[40px] md:text-[48px] leading-[1.08] px-2"
         >
           {title}
         </h2>
-        <div className="mt-8 md:mt-10 flex flex-col items-center w-full">{children}</div>
+        <div className="mt-6 sm:mt-8 md:mt-10 flex flex-col items-center w-full">{children}</div>
       </div>
     </section>
   );
@@ -194,7 +200,7 @@ export function Chapter({
 
 export function P({ children }: { children: ReactNode }) {
   return (
-    <p className="measure mt-6 first:mt-0 text-[19px] sm:text-[20px] leading-[1.75] text-[#16191E] text-center mx-auto">
+    <p className="measure mt-5 sm:mt-6 first:mt-0 text-[17px] sm:text-[20px] leading-[1.72] text-[#16191E] text-center mx-auto px-1 sm:px-0">
       {children}
     </p>
   );
@@ -203,7 +209,7 @@ export function P({ children }: { children: ReactNode }) {
 export function Note({ children }: { children: ReactNode }) {
   return (
     <p
-      className="measure mt-7 border-l-4 border-r-4 px-6 py-4 text-[18px] sm:text-[19px] leading-relaxed italic text-[#343B45] bg-paper/60 text-center mx-auto"
+      className="measure mt-6 sm:mt-7 border-l-4 border-r-4 px-4 sm:px-6 py-3.5 sm:py-4 text-[16px] sm:text-[19px] leading-relaxed italic text-[#343B45] bg-paper/60 text-center mx-auto"
       style={{ borderColor: "var(--accent)" }}
     >
       {children}
@@ -217,24 +223,17 @@ export function Note({ children }: { children: ReactNode }) {
 export function PullQuote({
   children,
   accent = "var(--accent)",
-  parallax = true,
 }: {
   children: ReactNode;
   accent?: string;
   parallax?: boolean;
 }) {
-  const { ref, progress } = useElementScrollProgress<HTMLQuoteElement>();
-  const floatY = parallax ? Math.round(progress * -16) : 0;
-
   return (
     <blockquote
-      ref={ref}
       className="pull-quote"
       style={
         {
           borderColor: accent,
-          transform: parallax ? `translate3d(0, ${floatY}px, 0)` : undefined,
-          willChange: parallax ? "transform" : undefined,
         } as React.CSSProperties
       }
     >

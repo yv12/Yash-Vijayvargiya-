@@ -32,6 +32,7 @@ export default {
         display: ['"Bricolage Grotesque"', "system-ui", "sans-serif"],
         body: ['"Source Serif 4"', "Georgia", "serif"],
         mono: ['"IBM Plex Mono"', "ui-monospace", "monospace"],
+        cursive: ['"Caveat"', "cursive"],
       },
       maxWidth: {
         measure: "62ch",
@@ -40,6 +41,13 @@ export default {
       borderRadius: {
         DEFAULT: "4px",
         lg: "8px",
+      },
+      screens: {
+        xs: "480px",
+        sm: "640px",
+        md: "768px",
+        lg: "1024px",
+        xl: "1280px",
       },
     },
   },

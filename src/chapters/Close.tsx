@@ -1,34 +1,17 @@
 import { Chapter, Note, P, SectionHeader } from "../ui";
 import { SkillOrbit } from "../visuals";
 import { chapters, direction, skills, systems } from "../content";
-import { useScrollProgress, useElementScrollProgress } from "../hooks/useScrollMotion";
+import { useElementScrollProgress } from "../hooks/useScrollMotion";
 
 const ch = (id: string) => chapters.find((c) => c.id === id)!;
 
 /* ------------------------------------------------------------------ vision celestial drift */
 
 export function VisionCelestialDrift() {
-  const { scrollY, progress } = useScrollProgress();
-  // Bidirectional parallax drift: orbs glide in opposing diagonals on scroll up/down
-  const orb1Y = Math.round(scrollY * -0.16);
-  const orb1X = Math.round(Math.sin(progress * Math.PI) * 45);
-  const orb2Y = Math.round(scrollY * 0.14);
-  const orb2X = Math.round(-Math.cos(progress * Math.PI) * 40);
-
   return (
     <div className="vision-drift-layer" aria-hidden="true">
-      <div
-        className="vision-drift-orb vision-drift-orb-1"
-        style={{
-          transform: `translate3d(${orb1X}px, ${orb1Y}px, 0)`,
-        }}
-      />
-      <div
-        className="vision-drift-orb vision-drift-orb-2"
-        style={{
-          transform: `translate3d(${orb2X}px, ${orb2Y}px, 0)`,
-        }}
-      />
+      <div className="vision-drift-orb vision-drift-orb-1" />
+      <div className="vision-drift-orb vision-drift-orb-2" />
     </div>
   );
 }

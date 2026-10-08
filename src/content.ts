@@ -29,7 +29,7 @@ export const TONE: Record<Tone, { bg: string; accent: string }> = {
 
 export const meta = {
   name: "Yash Vijayvargiya",
-  role: "Product-minded analyst willing to bridge business, technology and AI.",
+  role: "Product Manager at the intersection of business, technology, and AI.",
   promise: "Fourteen chapters. Read it end to end, or jump to the work.",
   keywords: [
     "Curiosity",

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Chapter, Draw, Note, P, PullQuote, SectionHeader } from "../ui";
 import { Lenses, PathTimeline, PinnedCards } from "../visuals";
 import {
@@ -11,10 +11,9 @@ import {
   rag,
   speed,
 } from "../content";
-import { useRef } from "react";
 import { PhysicsButtons } from "../components/PhysicsButtons";
 import { Link } from "react-router-dom";
-import { useScrollProgress, useElementScrollProgress } from "../hooks/useScrollMotion";
+import { useScrollProgress } from "../hooks/useScrollMotion";
 
 const ch = (id: string) => chapters.find((c) => c.id === id)!;
 
@@ -35,49 +34,92 @@ function HeroBackground() {
       />
 
       {/* Marquee Background */}
-      <div className="absolute inset-0 z-10 flex flex-col justify-center gap-16 opacity-80 origin-center -rotate-3 scale-[1.15]">
+      <div className="absolute inset-0 z-10 flex flex-col justify-center gap-8 sm:gap-12 md:gap-16 opacity-75 sm:opacity-80 origin-center -rotate-3 scale-[1.08] sm:scale-[1.15]">
         {/* Track 1 - Yellow */}
-        <div className="flex animate-marquee whitespace-nowrap items-center w-max bg-[#FACC15] py-4 shadow-lg border-y border-black/10">
+        <div className="flex animate-marquee whitespace-nowrap items-center w-max bg-[#FACC15] py-2.5 sm:py-3.5 md:py-4 shadow-lg border-y border-black/10">
           {marqueeContent.map((word, i) => (
-             <div key={`t1-${word}-${i}`} className="flex items-center gap-6 mx-3">
-                <span className="text-black text-[17px] font-mono font-bold tracking-tight uppercase">
+             <div key={`t1-${word}-${i}`} className="flex items-center gap-4 sm:gap-6 mx-2 sm:mx-3">
+                <span className="text-black text-[13px] sm:text-[15px] md:text-[17px] font-mono font-bold tracking-tight uppercase">
                   {word}
                 </span>
-                <span aria-hidden="true" className="text-black/40 text-[16px]">→</span>
+                <span aria-hidden="true" className="text-black/40 text-[13px] sm:text-[16px]">→</span>
              </div>
           ))}
         </div>
         
         {/* Track 2 - Fluorescent Green (Reverse) */}
-        <div className="flex animate-marquee-reverse whitespace-nowrap items-center w-max bg-[#39FF14] py-4 shadow-lg border-y border-black/10" style={{ marginLeft: '-30%' }}>
+        <div className="flex animate-marquee-reverse whitespace-nowrap items-center w-max bg-[#39FF14] py-2.5 sm:py-3.5 md:py-4 shadow-lg border-y border-black/10" style={{ marginLeft: '-30%' }}>
           {marqueeContent.map((word, i) => (
-             <div key={`t2-${word}-${i}`} className="flex items-center gap-6 mx-3">
-                <span className="text-black text-[17px] font-mono font-bold tracking-tight uppercase">
+             <div key={`t2-${word}-${i}`} className="flex items-center gap-4 sm:gap-6 mx-2 sm:mx-3">
+                <span className="text-black text-[13px] sm:text-[15px] md:text-[17px] font-mono font-bold tracking-tight uppercase">
                   {word}
                 </span>
-                <span aria-hidden="true" className="text-black/40 text-[16px]">→</span>
+                <span aria-hidden="true" className="text-black/40 text-[13px] sm:text-[16px]">→</span>
              </div>
           ))}
         </div>
         
         {/* Track 3 - Orange */}
-        <div className="flex animate-marquee whitespace-nowrap items-center w-max bg-[#F97316] py-4 shadow-lg border-y border-black/10" style={{ marginLeft: '-15%' }}>
+        <div className="flex animate-marquee whitespace-nowrap items-center w-max bg-[#F97316] py-2.5 sm:py-3.5 md:py-4 shadow-lg border-y border-black/10" style={{ marginLeft: '-15%' }}>
           {marqueeContent.map((word, i) => (
-             <div key={`t3-${word}-${i}`} className="flex items-center gap-6 mx-3">
-                <span className="text-black text-[17px] font-mono font-bold tracking-tight uppercase">
+             <div key={`t3-${word}-${i}`} className="flex items-center gap-4 sm:gap-6 mx-2 sm:mx-3">
+                <span className="text-black text-[13px] sm:text-[15px] md:text-[17px] font-mono font-bold tracking-tight uppercase">
                   {word}
                 </span>
-                <span aria-hidden="true" className="text-black/40 text-[16px]">→</span>
+                <span aria-hidden="true" className="text-black/40 text-[13px] sm:text-[16px]">→</span>
              </div>
           ))}
         </div>
       </div>
       
       {/* Edge fades to blend nicely */}
-      <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-clay to-transparent pointer-events-none z-20" />
-      <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-clay to-transparent pointer-events-none z-20" />
-      <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-clay to-transparent pointer-events-none z-20" />
-      <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-clay to-transparent pointer-events-none z-20" />
+      <div className="absolute inset-y-0 left-0 w-16 sm:w-32 bg-gradient-to-r from-clay to-transparent pointer-events-none z-20" />
+      <div className="absolute inset-y-0 right-0 w-16 sm:w-32 bg-gradient-to-l from-clay to-transparent pointer-events-none z-20" />
+      <div className="absolute inset-x-0 top-0 h-16 sm:h-32 bg-gradient-to-b from-clay to-transparent pointer-events-none z-20" />
+      <div className="absolute inset-x-0 bottom-0 h-16 sm:h-32 bg-gradient-to-t from-clay to-transparent pointer-events-none z-20" />
+    </div>
+  );
+}
+
+/**
+ * Live handwriting animation in cursive font that writes out once when the website opens.
+ */
+function LiveCursiveRole({ text }: { text: string }) {
+  const [displayedText, setDisplayedText] = useState("");
+  const [isTyping, setIsTyping] = useState(true);
+
+  useEffect(() => {
+    let index = 0;
+    // Brief initial pause so the visitor sees the pen begin writing
+    const startDelay = setTimeout(() => {
+      const interval = setInterval(() => {
+        index++;
+        if (index <= text.length) {
+          setDisplayedText(text.slice(0, index));
+        } else {
+          setIsTyping(false);
+          clearInterval(interval);
+        }
+      }, 32); // Fluid handwriting pace
+
+      return () => clearInterval(interval);
+    }, 280);
+
+    return () => clearTimeout(startDelay);
+  }, [text]);
+
+  return (
+    <div
+      aria-label={text}
+      className="measure mt-3 sm:mt-5 text-[22px] sm:text-[32px] md:text-[40px] text-[#A33726] font-cursive font-semibold leading-[1.25] max-w-[62ch] min-h-[3.6em] sm:min-h-[2.8em] flex items-center justify-center flex-wrap px-2"
+    >
+      <span>{displayedText}</span>
+      {isTyping && (
+        <span
+          className="inline-block w-[3px] h-[1.05em] bg-[#A33726] ml-1.5 align-middle animate-pulse rounded-full shadow-sm"
+          aria-hidden="true"
+        />
+      )}
     </div>
   );
 }
@@ -89,7 +131,7 @@ export function Opening() {
     <section
       id="opening"
       aria-labelledby="opening-title"
-      className="relative flex min-h-[100svh] flex-col justify-center bg-clay px-6 pb-20 pt-28 sm:px-10 lg:px-16 text-center overflow-hidden"
+      className="relative flex min-h-[100svh] flex-col justify-center bg-clay px-4 pb-16 pt-20 sm:px-10 sm:pb-20 sm:pt-28 lg:px-16 text-center overflow-hidden"
     >
       <HeroBackground />
 
@@ -99,35 +141,33 @@ export function Opening() {
         <h1
           id="opening-title"
           ref={titleRef}
-          className="text-[42px] font-display font-medium tracking-tight text-ink sm:text-[64px] md:text-[84px] leading-[0.98]"
+          className="text-[36px] sm:text-[60px] md:text-[80px] lg:text-[84px] font-display font-medium tracking-tight text-ink leading-[1.02] sm:leading-[0.98]"
         >
           {meta.name}
         </h1>
-        <p className="measure mt-6 text-[20px] sm:text-[23px] text-[#800000] font-bold font-body leading-relaxed max-w-[62ch]">
-          {meta.role}
-        </p>
+        <LiveCursiveRole text={meta.role} />
 
         {/* Navigation cards — distinctly styled per section */}
-        <div className="relative z-20 mt-20 flex flex-col md:flex-row gap-5 items-stretch justify-center w-full max-w-5xl mx-auto px-4 text-left">
+        <div className="relative z-20 mt-10 sm:mt-16 md:mt-20 flex flex-col md:flex-row gap-4 sm:gap-5 items-stretch justify-center w-full max-w-5xl mx-auto px-2 sm:px-4 text-left">
           {/* My Story */}
           <Link
             to="/story"
             id="nav-story"
-            className="flex flex-col w-full md:w-1/3 group relative overflow-hidden bg-paper border-2 border-[#A33726]/30 p-8 rounded-2xl shadow-sm hover:shadow-2xl transition-all hover:-translate-y-1"
+            className="flex flex-col w-full md:w-1/3 group relative overflow-hidden bg-paper border-2 border-[#A33726]/30 p-5 sm:p-7 md:p-8 rounded-xl sm:rounded-2xl shadow-sm hover:shadow-2xl transition-all hover:-translate-y-1"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-[#A33726]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
             {/* Icon glyph */}
-            <div className="w-10 h-10 rounded-xl bg-[#A33726]/10 border border-[#A33726]/20 flex items-center justify-center mb-4 flex-shrink-0">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#A33726]/10 border border-[#A33726]/20 flex items-center justify-center mb-3 sm:mb-4 flex-shrink-0">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
                 <path d="M3 4h12M3 8h8M3 12h10" stroke="#A33726" strokeWidth="1.5" strokeLinecap="round"/>
               </svg>
             </div>
             <span className="font-mono text-[10px] font-bold tracking-widest text-[#A33726] uppercase mb-1">My Story</span>
-            <h2 className="text-[20px] font-display font-medium text-ink mb-2 leading-snug">The analyst between two rooms</h2>
-            <p className="text-graphite font-body text-[14px] leading-relaxed flex-1">Background, turning points, and the three principles I apply before anything gets built.</p>
-            <div className="mt-6 flex items-center justify-between">
-              <span className="font-mono text-[11px] text-graphite">5 chapters · ~6 min</span>
-              <span className="font-mono text-[13px] font-bold text-[#A33726] group-hover:translate-x-1 transition-transform inline-block">Read →</span>
+            <h2 className="text-[18px] sm:text-[20px] font-display font-medium text-ink mb-2 leading-snug">The analyst between two rooms</h2>
+            <p className="text-graphite font-body text-[13px] sm:text-[14px] leading-relaxed flex-1">Background, turning points, and the three principles I apply before anything gets built.</p>
+            <div className="mt-5 sm:mt-6 flex items-center justify-between">
+              <span className="font-mono text-[10px] sm:text-[11px] text-graphite">5 chapters · ~6 min</span>
+              <span className="font-mono text-[12px] sm:text-[13px] font-bold text-[#A33726] group-hover:translate-x-1 transition-transform inline-block">Read →</span>
             </div>
           </Link>
 
@@ -135,21 +175,21 @@ export function Opening() {
           <Link
             to="/work"
             id="nav-work"
-            className="flex flex-col w-full md:w-1/3 group relative overflow-hidden bg-paper border-2 border-[#1B3AC7]/30 p-8 rounded-2xl shadow-sm hover:shadow-2xl transition-all hover:-translate-y-1"
+            className="flex flex-col w-full md:w-1/3 group relative overflow-hidden bg-paper border-2 border-[#1B3AC7]/30 p-5 sm:p-7 md:p-8 rounded-xl sm:rounded-2xl shadow-sm hover:shadow-2xl transition-all hover:-translate-y-1"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-[#1B3AC7]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-            <div className="w-10 h-10 rounded-xl bg-[#1B3AC7]/10 border border-[#1B3AC7]/20 flex items-center justify-center mb-4 flex-shrink-0">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#1B3AC7]/10 border border-[#1B3AC7]/20 flex items-center justify-center mb-3 sm:mb-4 flex-shrink-0">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
                 <rect x="2" y="5" width="5" height="10" rx="1" stroke="#1B3AC7" strokeWidth="1.5"/>
                 <rect x="9" y="2" width="5" height="13" rx="1" stroke="#1B3AC7" strokeWidth="1.5"/>
               </svg>
             </div>
             <span className="font-mono text-[10px] font-bold tracking-widest text-[#1B3AC7] uppercase mb-1">Case Studies</span>
-            <h2 className="text-[20px] font-display font-medium text-ink mb-2 leading-snug">Evidence over instinct</h2>
-            <p className="text-graphite font-body text-[14px] leading-relaxed flex-1">Blinkit, OCR, HDFC, Fraud detection — each with the hypothesis, the evidence, and what changed because of it.</p>
-            <div className="mt-6 flex items-center justify-between">
-              <span className="font-mono text-[11px] text-graphite">5 case studies · live demos</span>
-              <span className="font-mono text-[13px] font-bold text-[#1B3AC7] group-hover:translate-x-1 transition-transform inline-block">View →</span>
+            <h2 className="text-[18px] sm:text-[20px] font-display font-medium text-ink mb-2 leading-snug">Evidence over instinct</h2>
+            <p className="text-graphite font-body text-[13px] sm:text-[14px] leading-relaxed flex-1">Blinkit, OCR, HDFC, Fraud detection — each with the hypothesis, the evidence, and what changed because of it.</p>
+            <div className="mt-5 sm:mt-6 flex items-center justify-between">
+              <span className="font-mono text-[10px] sm:text-[11px] text-graphite">5 case studies · live demos</span>
+              <span className="font-mono text-[12px] sm:text-[13px] font-bold text-[#1B3AC7] group-hover:translate-x-1 transition-transform inline-block">View →</span>
             </div>
           </Link>
 
@@ -157,10 +197,10 @@ export function Opening() {
           <Link
             to="/vision"
             id="nav-vision"
-            className="flex flex-col w-full md:w-1/3 group relative overflow-hidden bg-paper border-2 border-[#1F5C58]/30 p-8 rounded-2xl shadow-sm hover:shadow-2xl transition-all hover:-translate-y-1"
+            className="flex flex-col w-full md:w-1/3 group relative overflow-hidden bg-paper border-2 border-[#1F5C58]/30 p-5 sm:p-7 md:p-8 rounded-xl sm:rounded-2xl shadow-sm hover:shadow-2xl transition-all hover:-translate-y-1"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-[#1F5C58]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-            <div className="w-10 h-10 rounded-xl bg-[#1F5C58]/10 border border-[#1F5C58]/20 flex items-center justify-center mb-4 flex-shrink-0">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#1F5C58]/10 border border-[#1F5C58]/20 flex items-center justify-center mb-3 sm:mb-4 flex-shrink-0">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
                 <circle cx="9" cy="9" r="3" stroke="#1F5C58" strokeWidth="1.5"/>
                 <path d="M9 2v2M9 14v2M2 9h2M14 9h2" stroke="#1F5C58" strokeWidth="1.5" strokeLinecap="round"/>
@@ -168,11 +208,11 @@ export function Opening() {
               </svg>
             </div>
             <span className="font-mono text-[10px] font-bold tracking-widest text-[#1F5C58] uppercase mb-1">Vision</span>
-            <h2 className="text-[20px] font-display font-medium text-ink mb-2 leading-snug">What I want to own next</h2>
-            <p className="text-graphite font-body text-[14px] leading-relaxed flex-1">The systems, directions, and skills orbiting the next phase — from card payment flows to owning a product end to end.</p>
-            <div className="mt-6 flex items-center justify-between">
-              <span className="font-mono text-[11px] text-graphite">Systems + direction</span>
-              <span className="font-mono text-[13px] font-bold text-[#1F5C58] group-hover:translate-x-1 transition-transform inline-block">Explore →</span>
+            <h2 className="text-[18px] sm:text-[20px] font-display font-medium text-ink mb-2 leading-snug">What I want to own next</h2>
+            <p className="text-graphite font-body text-[13px] sm:text-[14px] leading-relaxed flex-1">The systems, directions, and skills orbiting the next phase — from card payment flows to owning a product end to end.</p>
+            <div className="mt-5 sm:mt-6 flex items-center justify-between">
+              <span className="font-mono text-[10px] sm:text-[11px] text-graphite">Systems + direction</span>
+              <span className="font-mono text-[12px] sm:text-[13px] font-bold text-[#1F5C58] group-hover:translate-x-1 transition-transform inline-block">Explore →</span>
             </div>
           </Link>
         </div>
@@ -184,15 +224,10 @@ export function Opening() {
 /* ------------------------------------------------------------------ story scroll motion */
 
 function ParallaxNumeral({ num, accent = "#A33726" }: { num: string; accent?: string }) {
-  const { ref, progress } = useElementScrollProgress<HTMLDivElement>();
-  // Smooth bidirectional parallax float: moves upwards when scrolling down, downwards when scrolling up
-  const floatY = Math.round(progress * -55);
   return (
     <div
-      ref={ref}
       className="story-parallax-num"
       style={{
-        transform: `translate3d(0, ${floatY}px, 0)`,
         color: accent,
       }}
       aria-hidden="true"

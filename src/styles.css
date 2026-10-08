@@ -9,6 +9,8 @@
 
   html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
@@ -16,6 +18,14 @@
     font-size: 18px;
     line-height: 1.65;
     font-synthesis-weight: none;
+    overflow-x: hidden;
+    width: 100%;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  button, a {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
   }
 
   h1,
@@ -52,6 +62,10 @@
 
   .measure {
     max-width: 62ch;
+  }
+
+  .font-cursive {
+    font-family: "Caveat", cursive, sans-serif;
   }
 
   .link {
@@ -328,166 +342,179 @@
   letter-spacing: 0.02em;
 }
 
-/* ---- 2000s RGB Lights UI/UX for Live Project Links -------------- */
+/* ---- 90s Aesthetic Tactile Hardware Button for Live Project Links ---- */
 
+.retro-90s-btn,
 .launch-link-rgb {
   position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  border-radius: 9999px;
+  justify-content: center;
+  border-radius: 4px;
   font-family: "IBM Plex Mono", monospace;
   font-weight: 700;
-  color: #FFFFFF !important;
-  background: #0F141C;
+  color: #F3F4F6 !important;
   text-decoration: none;
-  overflow: hidden;
-  box-shadow: 0 0 12px rgba(255, 0, 100, 0.45), 
-              0 0 22px rgba(0, 240, 255, 0.35), 
-              inset 0 1px 0 rgba(255, 255, 255, 0.4);
-  border: 2px solid transparent;
-  transition: transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 160ms ease;
+  user-select: none;
+  cursor: pointer;
+  background-color: #161A22;
+  background-image: 
+    linear-gradient(180deg, #242A36 0%, #141820 100%),
+    repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(0, 0, 0, 0.22) 2px, rgba(0, 0, 0, 0.22) 4px);
+  border: 1px solid #090C11;
+  box-shadow: 
+    inset 1px 1px 0 rgba(255, 255, 255, 0.38),
+    inset 2px 2px 0 rgba(255, 255, 255, 0.08),
+    inset -1px -1px 0 rgba(0, 0, 0, 0.75),
+    inset -2px -2px 0 rgba(0, 0, 0, 0.35),
+    0 2px 0 #07090D,
+    0 4px 8px rgba(0, 0, 0, 0.25);
+  transition: transform 120ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 120ms ease, background-color 120ms ease;
   z-index: 1;
 }
 
-/* 2000s Rotating RGB chasing border animation */
-.launch-link-rgb::before {
-  content: "";
-  position: absolute;
-  inset: -3px;
-  border-radius: 9999px;
-  background: conic-gradient(
-    #FF0055, 
-    #FF8800, 
-    #FFEE00, 
-    #00FF66, 
-    #00F0FF, 
-    #7B00FF, 
-    #FF00AA, 
-    #FF0055
-  );
-  z-index: -2;
-  animation: rgb-spin 3.2s linear infinite;
+/* 90s Active Press: Physical depression into socket */
+.retro-90s-btn:active,
+.launch-link-rgb:active {
+  transform: translate(1px, 2px) !important;
+  box-shadow: 
+    inset 2px 2px 3px rgba(0, 0, 0, 0.9),
+    inset -1px -1px 0 rgba(255, 255, 255, 0.12),
+    0 0 0 transparent !important;
 }
 
-/* Inner dark chassis */
-.launch-link-rgb::after {
-  content: "";
-  position: absolute;
-  inset: 2px;
-  border-radius: 9999px;
-  background: linear-gradient(180deg, #1C232E 0%, #0D1219 100%);
-  z-index: -1;
-  transition: background 150ms ease;
-}
-
-@keyframes rgb-spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* 2000s Gel gloss sheen across top half */
-.rgb-gloss-sheen {
-  position: absolute;
-  top: 1px;
-  left: 10%;
-  right: 10%;
-  height: 46%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.38) 0%, rgba(255, 255, 255, 0.02) 100%);
-  border-radius: 9999px 9999px 40px 40px;
-  pointer-events: none;
-  z-index: 5;
-}
-
-/* 2000s Pulsing RGB LED indicator dot */
-.rgb-led-indicator {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  background: #00FF66;
-  box-shadow: 0 0 6px #00FF66, 0 0 12px #00FF66;
-  animation: rgb-led-pulse 1.4s ease-in-out infinite;
-  z-index: 10;
-}
-
-@keyframes rgb-led-pulse {
-  0%, 100% {
-    background: #00FF66;
-    box-shadow: 0 0 6px #00FF66, 0 0 12px #00FF66;
-    transform: scale(0.95);
-  }
-  33% {
-    background: #00F0FF;
-    box-shadow: 0 0 10px #00F0FF, 0 0 18px #00F0FF;
-    transform: scale(1.15);
-  }
-  66% {
-    background: #FF0077;
-    box-shadow: 0 0 10px #FF0077, 0 0 18px #FF0077;
-    transform: scale(1.1);
-  }
-}
-
-/* Hover attract flare */
+/* 90s Hover Attraction: Crisp bevel glow & micro elevation */
+.retro-90s-btn:hover,
+.retro-90s-btn:focus-visible,
 .launch-link-rgb:hover,
 .launch-link-rgb:focus-visible {
-  transform: translateY(-2px) scale(1.04);
-  box-shadow: 0 0 22px rgba(0, 240, 255, 0.65), 
-              0 0 38px rgba(255, 0, 128, 0.55), 
-              0 0 55px rgba(0, 255, 100, 0.35);
+  transform: translateY(-1px);
+  background-image: 
+    linear-gradient(180deg, #2B3342 0%, #181D26 100%),
+    repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(0, 0, 0, 0.18) 2px, rgba(0, 0, 0, 0.18) 4px);
+  box-shadow: 
+    inset 1px 1px 0 rgba(255, 255, 255, 0.55),
+    inset 2px 2px 0 rgba(255, 255, 255, 0.14),
+    inset -1px -1px 0 rgba(0, 0, 0, 0.8),
+    inset -2px -2px 0 rgba(0, 0, 0, 0.4),
+    0 3px 0 #07090D,
+    0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
-.launch-link-rgb:hover::after {
-  background: linear-gradient(180deg, #252F3D 0%, #131A24 100%);
+/* 90s Status Jewel LED Lamp Housing */
+.retro-led-housing,
+.rgb-led-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #090C11;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.95);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
 }
 
-.launch-link-rgb:active {
-  transform: translateY(0px) scale(0.98);
+/* 90s Phosphor Jewel LED Core */
+.retro-led-core {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #FFFFFF 0%, var(--retro-accent, #1B3AC7) 55%, #0B101C 100%);
+  box-shadow: 0 0 5px var(--retro-accent, #1B3AC7), 0 0 10px var(--retro-accent, #1B3AC7);
+  animation: retro-led-breathe 2.4s ease-in-out infinite;
 }
 
+@keyframes retro-led-breathe {
+  0%, 100% {
+    opacity: 0.85;
+    box-shadow: 0 0 4px var(--retro-accent, #1B3AC7), 0 0 8px var(--retro-accent, #1B3AC7);
+    transform: scale(0.95);
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 7px var(--retro-accent, #1B3AC7), 0 0 13px var(--retro-accent, #1B3AC7);
+    transform: scale(1.08);
+  }
+}
+
+.retro-90s-btn:hover .retro-led-core,
+.launch-link-rgb:hover .retro-led-core {
+  opacity: 1;
+  box-shadow: 0 0 8px var(--retro-accent, #1B3AC7), 0 0 16px var(--retro-accent, #1B3AC7);
+}
+
+/* Text label */
+.retro-btn-text {
+  position: relative;
+  z-index: 2;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Arrow glyph */
+.retro-btn-arrow,
+.launch-link-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--retro-accent, #1B3AC7);
+  transition: transform 120ms ease, color 120ms ease;
+}
+
+.retro-90s-btn:hover .retro-btn-arrow,
+.retro-90s-btn:hover .launch-link-icon,
+.launch-link-rgb:hover .retro-btn-arrow,
+.launch-link-rgb:hover .launch-link-icon {
+  color: #FFFFFF;
+  transform: translate(1px, -1px);
+}
+
+/* Size Variants */
+.retro-btn-sm,
 .launch-link-sm {
   font-size: 11px;
-  padding: 6px 14px;
+  padding: 4px 10px;
+  gap: 6px;
 }
 
+.retro-btn-md,
 .launch-link-md {
-  font-size: 13px;
-  padding: 9px 20px;
+  font-size: 12px;
+  padding: 7px 14px;
+  gap: 8px;
 }
 
+.retro-btn-lg,
 .launch-link-lg {
-  font-size: 15px;
-  padding: 13px 28px;
-}
-
-.launch-link-icon {
-  flex-shrink: 0;
-  color: #00F0FF;
-  transition: transform 150ms ease, color 150ms ease;
-}
-
-.launch-link-rgb:hover .launch-link-icon,
-.launch-link-rgb:focus-visible .launch-link-icon {
-  transform: translate(2px, -2px);
-  color: #FFEE00;
+  font-size: 13px;
+  padding: 9px 18px;
+  gap: 9px;
 }
 
 /* ---- pull quote --------------------------------------------------- */
 
 .pull-quote {
   max-width: 62ch;
-  margin: 2rem auto 0;
-  padding: 1rem 1.5rem;
+  margin: 1.5rem auto 0;
+  padding: 0.85rem 1.15rem;
   border-left: 3px solid;
   background: rgba(255,255,255,0.45);
   font-family: "Bricolage Grotesque", sans-serif;
-  font-size: clamp(19px, 2.2vw, 24px);
+  font-size: clamp(16px, 4.2vw, 24px);
   font-weight: 600;
-  line-height: 1.3;
+  line-height: 1.35;
   color: #12151A;
   text-align: left;
   font-style: normal;
+}
+
+@media (min-width: 640px) {
+  .pull-quote {
+    margin: 2rem auto 0;
+    padding: 1rem 1.5rem;
+  }
 }
 
 /* ---- story variant ------------------------------------------------ */
@@ -774,26 +801,34 @@
 
 .work-shift-container {
   width: 100%;
-  will-change: transform;
-  transition: transform 60ms cubic-bezier(0.1, 0.9, 0.2, 1);
 }
 
 .work-telemetry-hud {
-  position: fixed;
-  right: 1.25rem;
-  bottom: 1.25rem;
-  z-index: 50;
-  pointer-events: none;
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .work-telemetry-hud {
+    display: block;
+    position: fixed;
+    right: 1.25rem;
+    bottom: 1.25rem;
+    z-index: 50;
+    pointer-events: none;
+  }
 }
 
 .work-telemetry-panel {
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(12px);
+  background: rgba(248, 250, 252, 0.94);
+  backdrop-filter: blur(14px);
   border: 1px solid rgba(27, 58, 199, 0.25);
-  box-shadow: 0 8px 30px rgba(18, 21, 26, 0.08);
-  border-radius: 8px;
+  border-top: 2px solid #1B3AC7;
+  box-shadow: 
+    inset 1px 1px 0 rgba(255, 255, 255, 0.8),
+    0 8px 30px rgba(18, 21, 26, 0.10);
+  border-radius: 6px;
   padding: 10px 14px;
-  min-width: 175px;
+  min-width: 180px;
 }
 
 .work-telemetry-pulse {
@@ -858,6 +893,196 @@
   height: 460px;
   background: radial-gradient(circle, rgba(27, 58, 199, 0.10) 0%, rgba(27, 58, 199, 0.01) 60%, transparent 75%);
   filter: blur(50px);
+}
+
+/* ---- Floating Physics Hero Buttons (Stagnant Brand Styling) ---- */
+
+.physics-bubble-btn {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  white-space: nowrap;
+  user-select: none;
+  cursor: pointer;
+  text-decoration: none;
+  z-index: 30;
+  will-change: transform;
+  transition: box-shadow 150ms ease, border-color 150ms ease, filter 150ms ease;
+}
+
+.physics-bubble-btn:hover {
+  filter: brightness(1.08);
+}
+
+.physics-bubble-btn:active {
+  filter: brightness(0.95);
+}
+
+.physics-bubble-btn .bubble-icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.physics-bubble-btn .bubble-label {
+  line-height: 1;
+}
+
+.physics-bubble-btn .bubble-arrow {
+  font-size: 11px;
+  opacity: 0.75;
+  transition: transform 120ms ease, opacity 120ms ease;
+  line-height: 1;
+}
+
+.physics-bubble-btn:hover .bubble-arrow {
+  opacity: 1;
+  transform: translate(1px, -1px);
+}
+
+/* 1. LinkedIn Brand: Stagnant Official LinkedIn Blue with modern corporate sans */
+.physics-btn-linkedin {
+  background-color: #0A66C2 !important;
+  color: #FFFFFF !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 
+    0 4px 14px rgba(10, 102, 194, 0.40),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.physics-btn-linkedin:hover {
+  background-color: #004182 !important;
+  box-shadow: 
+    0 6px 20px rgba(10, 102, 194, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+/* 2. GitHub Brand: Stagnant Dark Slate Charcoal with developer monospace font */
+.physics-btn-github {
+  background-color: #24292F !important;
+  color: #F0F6FC !important;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace !important;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border: 1px solid rgba(240, 246, 252, 0.22);
+  box-shadow: 
+    0 4px 14px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+.physics-btn-github:hover {
+  background-color: #161B22 !important;
+  border-color: rgba(240, 246, 252, 0.4);
+  box-shadow: 
+    0 6px 20px rgba(0, 0, 0, 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+/* 3. Résumé Brand: Warm executive crimson/burgundy with editorial typography */
+.physics-btn-resume {
+  background-color: #8E2818 !important;
+  color: #FFF8F0 !important;
+  font-family: "Bricolage Grotesque", -apple-system, sans-serif !important;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  border: 1px solid rgba(255, 235, 215, 0.35);
+  box-shadow: 
+    0 4px 14px rgba(142, 40, 24, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.physics-btn-resume:hover {
+  background-color: #721C0E !important;
+  border-color: rgba(255, 235, 215, 0.55);
+  box-shadow: 
+    0 6px 20px rgba(142, 40, 24, 0.60),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+/* ---- Mobile Responsive Polish (Screens <= 640px) ---- */
+
+@media (max-width: 640px) {
+  body {
+    font-size: 16.5px;
+  }
+
+  /* Compact floating bubbles on mobile */
+  .physics-bubble-btn {
+    padding: 5px 10px;
+    gap: 5px;
+  }
+  .physics-btn-linkedin {
+    font-size: 11px !important;
+  }
+  .physics-btn-github {
+    font-size: 10.5px !important;
+  }
+  .physics-btn-resume {
+    font-size: 11px !important;
+  }
+  .physics-bubble-btn .bubble-arrow {
+    font-size: 9px;
+  }
+
+  /* Compact tactile 90s CTA buttons on mobile */
+  .retro-90s-btn,
+  .launch-link-rgb {
+    max-width: 100%;
+  }
+  .retro-btn-sm,
+  .launch-link-sm {
+    font-size: 10px;
+    padding: 3.5px 8px;
+    gap: 5px;
+  }
+  .retro-btn-md,
+  .launch-link-md {
+    font-size: 11px;
+    padding: 5.5px 11px;
+    gap: 6px;
+  }
+  .retro-btn-lg,
+  .launch-link-lg {
+    font-size: 12px;
+    padding: 7px 13px;
+    gap: 7px;
+  }
+
+  /* Work jump navigation on mobile */
+  .work-jump-nav {
+    gap: 6px;
+    padding: 12px 0 2px;
+  }
+  .work-jump-pill {
+    font-size: 10px;
+    padding: 3.5px 9px;
+  }
+
+  /* Ensure diagrams and code blocks don't cause horizontal overflow */
+  svg {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Dossier header spacing on mobile */
+  .dossier-header {
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.85rem;
+  }
 }
 
 

@@ -334,11 +334,11 @@ export function SkillOrbit() {
 
         {/* Below md the sky would be too small to read, so it does not run.
             Same skills, laid out flat, closest ring first. */}
-        <ul className="mt-6 flex flex-wrap gap-2 md:sr-only">
+        <ul className="mt-6 flex flex-wrap justify-center gap-2 md:sr-only">
           {orbit.rings.flat().map((sk) => (
             <li
               key={sk}
-              className="rounded border border-[#EAECE7]/25 px-3 py-2 font-mono text-[12px]"
+              className="rounded-full border border-rule/80 bg-paper/80 px-3.5 py-1.5 font-mono text-[12px] font-medium text-ink shadow-xs"
             >
               {sk}
             </li>

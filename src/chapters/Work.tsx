@@ -1,33 +1,20 @@
 import { useState, type ReactNode } from "react";
 import { Chapter, Draw, LaunchLink, Note, P, SectionHeader } from "../ui";
 import { artifacts, blinkit, chapters, fraud, hdfc, ocr } from "../content";
-import { useScrollProgress, useElementScrollProgress } from "../hooks/useScrollMotion";
+import { useScrollProgress } from "../hooks/useScrollMotion";
 
 const ch = (id: string) => chapters.find((c) => c.id === id)!;
 
-/* ------------------------------------------------------------------ work scroll motion */
+/* ------------------------------------------------------------------ work section wrapper */
 
 function WorkSectionShift({
   children,
-  side = "left",
 }: {
   children: ReactNode;
   side?: "left" | "right";
 }) {
-  const { ref, progress } = useElementScrollProgress<HTMLDivElement>();
-  const factor = side === "left" ? -1 : 1;
-  // Kinetic bilateral shift: smooth lateral glide reacting to scroll depth
-  const shiftX = Math.round(progress * 24 * factor);
-
   return (
-    <div
-      ref={ref}
-      className="work-shift-container w-full flex flex-col items-center"
-      style={{
-        transform: `translate3d(${shiftX}px, 0, 0)`,
-        willChange: "transform",
-      }}
-    >
+    <div className="w-full flex flex-col items-center">
       {children}
     </div>
   );
@@ -38,7 +25,7 @@ export function WorkTelemetryHUD() {
   const percent = Math.round(progress * 100);
 
   return (
-    <aside className="work-telemetry-hud" aria-label="Work telemetry feed">
+    <aside className="work-telemetry-hud hidden md:block" aria-label="Work telemetry feed">
       <div className="work-telemetry-panel">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-1.5">
@@ -85,11 +72,11 @@ export function WorkHeader() {
       />
       <WorkTelemetryHUD />
       {/* Jump nav */}
-      <div className="mx-auto max-w-page px-6 sm:px-10 lg:px-16">
-        <nav aria-label="Case study sections" className="work-jump-nav">
-          <span className="font-mono text-[10px] text-graphite uppercase tracking-widest self-center mr-2">Jump to:</span>
+      <div className="mx-auto max-w-page px-4 sm:px-10 lg:px-16">
+        <nav aria-label="Case study sections" className="work-jump-nav flex flex-wrap gap-1.5 sm:gap-2 py-3 sm:py-4">
+          <span className="font-mono text-[10px] text-graphite uppercase tracking-widest self-center mr-1 sm:mr-2">Jump to:</span>
           {cases.map((c) => (
-            <a key={c.href} href={c.href} className="work-jump-pill">
+            <a key={c.href} href={c.href} className="work-jump-pill text-[10px] sm:text-[11px] py-1 px-2.5 sm:py-1.5 sm:px-3">
               {c.label}
             </a>
           ))}
@@ -117,8 +104,8 @@ function DossierHeader({
   trackingSlug?: string;
 }) {
   return (
-    <div className="dossier-header">
-      <div className="flex flex-wrap items-center gap-3 justify-between w-full">
+    <div className="dossier-header w-full">
+      <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 justify-between w-full">
         <span
           className="dossier-kind-badge"
           style={{ color: kindColor, borderColor: `${kindColor}55` }}
@@ -131,7 +118,7 @@ function DossierHeader({
           </LaunchLink>
         )}
       </div>
-      <p className="font-mono text-[12px] text-graphite mt-1">{context}</p>
+      <p className="font-mono text-[11px] sm:text-[12px] text-graphite mt-1">{context}</p>
     </div>
   );
 }
@@ -156,27 +143,27 @@ function SwipeDemo() {
     <div className="mt-10 max-w-[720px] w-full">
       <p className="tag">{blinkit.demoLabel}</p>
 
-      <div className="mt-4 border border-rule bg-paper p-6">
+      <div className="mt-4 border border-rule bg-paper p-5 sm:p-6 rounded-xl sm:rounded-none">
         {card ? (
           <>
             <p className="tag text-signal">{card.level}</p>
-            <p className="mt-4 text-[24px] leading-tight font-display">
+            <p className="mt-4 text-[22px] sm:text-[24px] leading-tight font-display">
               {card.product}
             </p>
-            <p className="measure mt-3 text-[17px] text-graphite">{card.bridge}</p>
+            <p className="measure mt-3 text-[16px] sm:text-[17px] text-graphite">{card.bridge}</p>
 
-            <div className="mt-6 flex flex-wrap gap-3">
-              <button type="button" className="btn" onClick={() => decide("Skipped")}>
+            <div className="mt-6 flex flex-wrap gap-2.5 sm:gap-3">
+              <button type="button" className="btn flex-1 sm:flex-none text-center py-2.5" onClick={() => decide("Skipped")}>
                 Skip
               </button>
               <button
                 type="button"
-                className="btn"
+                className="btn flex-1 sm:flex-none text-center py-2.5"
                 onClick={() => decide("Saved for later")}
               >
                 Later
               </button>
-              <button type="button" className="btn" onClick={() => decide("Added")}>
+              <button type="button" className="btn flex-1 sm:flex-none text-center py-2.5" onClick={() => decide("Added")}>
                 Want it now
               </button>
             </div>
@@ -223,9 +210,6 @@ export function Blinkit() {
           kind="Fellowship project"
           kindColor="#1B3AC7"
           context={blinkit.context}
-          href={blinkit.links[1]?.href}
-          hrefLabel="Open swipe MVP"
-          trackingSlug="blinkit-swipe"
         />
 
         <P>
@@ -332,12 +316,15 @@ export function Blinkit() {
         <Note>{blinkit.honesty}</Note>
 
         {/* Prominent link block */}
-        <div className="mt-10 max-w-[760px] w-full border border-[#1B3AC7]/20 rounded-xl bg-[#1B3AC7]/04 p-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+        <div className="mt-10 max-w-[760px] w-full border border-rule/80 rounded-xl bg-paper/90 backdrop-blur-sm p-5 sm:p-7 shadow-sm flex flex-col sm:flex-row gap-4 sm:gap-5 items-start sm:items-center justify-between border-l-4 border-l-[#1B3AC7]">
           <div className="text-left">
-            <p className="font-mono text-[11px] font-bold text-[#1B3AC7] uppercase tracking-wider">Live Demos</p>
-            <p className="text-[15px] text-graphite mt-1">Both deployed. Try the recommendation logic yourself.</p>
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-[10px] font-bold text-[#1B3AC7] uppercase tracking-widest bg-[#1B3AC7]/10 px-2 py-0.5 rounded">SYS.DEPLOYED // LIVE</span>
+            </div>
+            <p className="font-display text-[17px] sm:text-[18px] font-semibold text-ink mt-2">Blinkit Live Environments</p>
+            <p className="text-[13px] sm:text-[14px] text-graphite mt-0.5">Two distinct systems live in production. Test both models directly.</p>
           </div>
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-2.5 sm:gap-3 w-full sm:w-auto">
             {blinkit.links.map((l) => (
               <LaunchLink
                 key={l.href}
@@ -465,9 +452,6 @@ export function Hdfc() {
           kind="Fellowship project"
           kindColor="#1B3AC7"
           context={hdfc.context}
-          href={hdfc.href}
-          hrefLabel="Open the assistant"
-          trackingSlug="hdfc"
         />
 
         {hdfc.body.map((t) => (
@@ -493,12 +477,15 @@ export function Hdfc() {
         <P>{hdfc.infra}</P>
 
         {/* Prominent CTA */}
-        <div className="mt-10 max-w-[560px] w-full border border-[#1B3AC7]/20 rounded-xl bg-[#1B3AC7]/[0.04] p-6 flex items-center justify-between gap-4">
+        <div className="mt-10 max-w-[620px] w-full border border-rule/80 rounded-xl bg-paper/90 backdrop-blur-sm p-6 sm:p-7 shadow-sm flex flex-col sm:flex-row gap-5 items-start sm:items-center justify-between border-l-4 border-l-[#1B3AC7]">
           <div className="text-left">
-            <p className="font-mono text-[11px] font-bold text-[#1B3AC7] uppercase tracking-wider">Live Tool</p>
-            <p className="text-[15px] text-graphite mt-1">Ask it about an HDFC mutual fund scheme.</p>
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-[10px] font-bold text-[#1B3AC7] uppercase tracking-widest bg-[#1B3AC7]/10 px-2 py-0.5 rounded">LIVE PRODUCTION TOOL</span>
+            </div>
+            <p className="font-display text-[18px] font-semibold text-ink mt-2">HDFC Scheme Assistant</p>
+            <p className="text-[14px] text-graphite mt-0.5">Query five active mutual fund schemes with citation verification.</p>
           </div>
-          <LaunchLink href={hdfc.href} accent="#1B3AC7" size="lg" trackingSlug="hdfc">
+          <LaunchLink href={hdfc.href} accent="#1B3AC7" size="md" trackingSlug="hdfc">
             Open assistant
           </LaunchLink>
         </div>
@@ -518,9 +505,6 @@ export function Fraud() {
           kind="Personal project"
           kindColor="#A33726"
           context={fraud.context}
-          href={fraud.href}
-          hrefLabel="Open the pipeline"
-          trackingSlug="fraud"
         />
 
         {fraud.body.map((t) => (
@@ -553,12 +537,15 @@ export function Fraud() {
         </div>
 
         {/* Prominent CTA */}
-        <div className="mt-10 max-w-[560px] w-full border border-[#A33726]/20 rounded-xl bg-[#A33726]/[0.04] p-6 flex items-center justify-between gap-4">
+        <div className="mt-10 max-w-[620px] w-full border border-rule/80 rounded-xl bg-paper/90 backdrop-blur-sm p-6 sm:p-7 shadow-sm flex flex-col sm:flex-row gap-5 items-start sm:items-center justify-between border-l-4 border-l-[#A33726]">
           <div className="text-left">
-            <p className="font-mono text-[11px] font-bold text-[#A33726] uppercase tracking-wider">Live Pipeline</p>
-            <p className="text-[15px] text-graphite mt-1">The full model lifecycle — staging, promotion gate, drift monitor.</p>
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-[10px] font-bold text-[#A33726] uppercase tracking-widest bg-[#A33726]/10 px-2 py-0.5 rounded">LIVE PIPELINE MONITOR</span>
+            </div>
+            <p className="font-display text-[18px] font-semibold text-ink mt-2">Model Promotion Lifecycle</p>
+            <p className="text-[14px] text-graphite mt-0.5">Staging shadow score, rejection gate, and live drift monitor.</p>
           </div>
-          <LaunchLink href={fraud.href} accent="#A33726" size="lg" trackingSlug="fraud">
+          <LaunchLink href={fraud.href} accent="#A33726" size="md" trackingSlug="fraud">
             Open pipeline
           </LaunchLink>
         </div>
