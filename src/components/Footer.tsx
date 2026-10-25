@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { PrivacyModal } from "./PrivacyNotice";
 import { contact } from "../content";
+import { trackButtonClick } from "../hooks/useClickTracking";
 
 export function Footer() {
   const [showPrivacy, setShowPrivacy] = useState(false);
@@ -15,6 +16,7 @@ export function Footer() {
             </h3>
             <a 
               href="mailto:yashvijay12@hotmail.com" 
+              onClick={() => trackButtonClick("email")}
               className="text-[14px] font-display font-semibold text-[#0071E3] hover:underline underline-offset-4 transition-colors"
             >
               yashvijay12@hotmail.com
@@ -22,16 +24,29 @@ export function Footer() {
           </div>
           
           <div className="flex items-center flex-wrap justify-center gap-6 font-display text-[13px] sm:text-[14px] font-medium">
-            <a href="https://www.linkedin.com/in/yv12/" target="_blank" rel="noopener noreferrer" className="text-graphite hover:text-ink transition-colors">
+            <a 
+              href="https://www.linkedin.com/in/yv12/" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              onClick={() => trackButtonClick("linkedin")}
+              className="text-graphite hover:text-ink transition-colors"
+            >
               LinkedIn
             </a>
-            <a href="https://github.com/yv12" target="_blank" rel="noopener noreferrer" className="text-graphite hover:text-ink transition-colors">
+            <a 
+              href="https://github.com/yv12" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              onClick={() => trackButtonClick("github")}
+              className="text-graphite hover:text-ink transition-colors"
+            >
               GitHub
             </a>
             <a
               href={`https://wa.me/${contact.whatsappPhone.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(contact.whatsappMessage)}`}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackButtonClick("whatsapp")}
               className="text-[#15803D] hover:text-[#166534] font-semibold transition-colors inline-flex items-center gap-1"
             >
               <span>WhatsApp</span>

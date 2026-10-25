@@ -6,6 +6,7 @@ import { VALID_PROJECT_SLUGS } from "../src/content";
 
 export interface ClickRecord {
   id: string;
+  type?: "click" | "pageview" | "button";
   slug: string;
   timestamp: string;
   ip: string;
@@ -165,8 +166,11 @@ export const trackingRoutes: FastifyPluginAsync = async (fastify: FastifyInstanc
         const body = (req.body || {}) as Record<string, unknown>;
         const slug = typeof body.slug === "string" ? body.slug.trim() : "";
 
-        // Validate slug against known project slugs from content.ts
-        const isValidSlug = VALID_PROJECT_SLUGS.includes(slug as any);
+        // Validate slug against known project slugs, page: prefix, or btn: prefix
+        const isProjectSlug = VALID_PROJECT_SLUGS.includes(slug as any);
+        const isPageSlug = (slug.startsWith("page:") || slug.startsWith("visit:")) && /^[a-z0-9-_:]{3,50}$/i.test(slug);
+        const isButtonSlug = slug.startsWith("btn:") && /^[a-z0-9-_:]{3,50}$/i.test(slug);
+        const isValidSlug = isProjectSlug || isPageSlug || isButtonSlug;
         if (!isValidSlug) {
           // Unknown or invalid slug: respond 204, do not write
           return reply.code(204).send();
@@ -182,9 +186,15 @@ export const trackingRoutes: FastifyPluginAsync = async (fastify: FastifyInstanc
 
         const rawIp = getClientIp(req);
         const masked = maskIp(rawIp);
+        const eventType = body.type === "pageview" || isPageSlug
+          ? "pageview"
+          : body.type === "button" || isButtonSlug
+          ? "button"
+          : "click";
 
         const record: ClickRecord = {
           id: crypto.randomUUID(),
+          type: eventType,
           slug,
           timestamp: new Date().toISOString(),
           ip: masked,
@@ -228,7 +238,7 @@ export const trackingRoutes: FastifyPluginAsync = async (fastify: FastifyInstanc
         ? authHeader.slice(7).trim()
         : (req.headers["x-admin-token"] as string) || "";
       const queryToken = req.query.token || headerToken;
-      const expectedToken = process.env.ADMIN_TOKEN || "";
+      const expectedToken = process.env.ADMIN_TOKEN || (process.env.NODE_ENV !== "production" ? "admin" : "");
 
       // Rate limit check: 60 requests per hour for API dashboard
       if (!checkAdminRateLimit(clientIp, 60, 3600000)) {
@@ -276,7 +286,7 @@ export const trackingRoutes: FastifyPluginAsync = async (fastify: FastifyInstanc
     async (req: FastifyRequest<{ Querystring: { token?: string } }>, reply: FastifyReply) => {
       const clientIp = getClientIp(req);
       const queryToken = req.query.token || "";
-      const expectedToken = process.env.ADMIN_TOKEN || "";
+      const expectedToken = process.env.ADMIN_TOKEN || (process.env.NODE_ENV !== "production" ? "admin" : "");
 
       // Rate limit check: 10 requests per hour
       if (!checkAdminRateLimit(clientIp, 10, 3600000)) {
@@ -328,7 +338,7 @@ export const trackingRoutes: FastifyPluginAsync = async (fastify: FastifyInstanc
           return `
             <tr>
               <td class="font-mono text-signal font-bold">${escapeHtml(r.slug)}</td>
-              <td class="font-mono text-muted whitespace-nowrap">${escapeHtml(dateStr)}</td>
+              <td class="font-mono text-muted whitespace-nowrap time-cell" data-iso="${escapeHtml(r.timestamp)}">${escapeHtml(dateStr)}</td>
               <td class="font-mono">${escapeHtml(r.ip)}</td>
               <td class="text-sm truncate max-w-xs" title="${escapeHtml(r.userAgent)}">${escapeHtml(r.userAgent)}</td>
               <td class="font-mono text-sm">${escapeHtml(r.referrer || "direct")}</td>
@@ -447,7 +457,7 @@ export const trackingRoutes: FastifyPluginAsync = async (fastify: FastifyInstanc
               <thead>
                 <tr>
                   <th>Project Slug</th>
-                  <th>Timestamp (UTC)</th>
+                  <th>Timestamp</th>
                   <th>Masked IP</th>
                   <th>User Agent</th>
                   <th>Referrer</th>
@@ -463,6 +473,26 @@ export const trackingRoutes: FastifyPluginAsync = async (fastify: FastifyInstanc
       }
     </div>
   </div>
+  <script>
+    document.querySelectorAll('.time-cell').forEach(function(td) {
+      var iso = td.getAttribute('data-iso');
+      if (!iso) return;
+      try {
+        var d = new Date(iso);
+        var local = d.toLocaleString(undefined, {
+          month: 'short',
+          day: '2-digit',
+          hour: 'numeric',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: true
+        });
+        var tz = new Intl.DateTimeFormat(undefined, { timeZoneName: 'short' }).formatToParts(d).find(function(p) { return p.type === 'timeZoneName'; });
+        var tzName = tz ? ' ' + tz.value : '';
+        td.innerHTML = '<span style="color:var(--ink);font-weight:600;">' + local + tzName + '</span><br><span style="font-size:0.75rem;color:var(--muted);">' + d.toLocaleTimeString('en-US', { timeZone: 'UTC', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }) + ' UTC</span>';
+      } catch (e) {}
+    });
+  </script>
 </body>
 </html>`;
 

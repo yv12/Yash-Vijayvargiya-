@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { contact } from "../content";
+import { trackButtonClick } from "../hooks/useClickTracking";
 
 export function Navigation() {
   const location = useLocation();
@@ -109,6 +110,7 @@ export function Navigation() {
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackButtonClick("interview-me-whatsapp")}
             className="flex items-center gap-1.5 border border-[#0071E3]/35 bg-[#0071E3]/[0.08] hover:bg-[#0071E3]/[0.15] text-[#0071E3] px-3.5 py-1.5 rounded-full text-[12px] sm:text-[13px] font-semibold transition-all shadow-sm hover:shadow"
             title="Chat directly on WhatsApp"
           >

@@ -5,6 +5,15 @@ import path from "node:path";
 import fs from "node:fs";
 import { trackingRoutes } from "./tracking";
 
+// Auto-load .env file if available (Node 20+)
+if (typeof process.loadEnvFile === "function") {
+  try {
+    process.loadEnvFile();
+  } catch {
+    // .env doesn't exist or already loaded
+  }
+}
+
 const server = Fastify({
   logger: {
     level: process.env.NODE_ENV === "production" ? "info" : "debug",

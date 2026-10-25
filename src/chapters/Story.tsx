@@ -54,19 +54,6 @@ export function Opening() {
     >
       <HeroBackground />
 
-      {/* Hand-Drawn "Sketch It Out" Framework: Positioned cleanly in bottom-left */}
-      <div 
-        aria-hidden="true"
-        className="absolute left-6 sm:left-12 md:left-16 lg:left-20 bottom-5 sm:bottom-7 lg:bottom-9 z-20 pointer-events-none select-none w-[160px] sm:w-[210px] md:w-[260px] lg:w-[290px] max-w-[42vw] sm:max-w-[24vw]"
-      >
-        <img
-          src="/sketch-framework.png"
-          alt="The Sketch It Out Framework: Hand-drawn problem solving sketch"
-          style={{ transform: "rotate(-23deg)", transformOrigin: "bottom left" }}
-          className="w-full max-h-[20vh] sm:max-h-[24vh] lg:max-h-[28vh] h-auto object-contain object-bottom object-left opacity-85 sm:opacity-90 drop-shadow-sm transition-transform"
-          loading="eager"
-        />
-      </div>
 
       <PhysicsButtons titleRef={titleRef} />
 

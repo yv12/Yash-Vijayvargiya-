@@ -18,6 +18,15 @@ import { Navigation } from "./components/Navigation";
 import { Footer } from "./components/Footer";
 import { PrivacyPage } from "./components/PrivacyNotice";
 import { AdminDashboard } from "./components/AdminDashboard";
+import { trackPageView } from "./hooks/useClickTracking";
+
+function PageTracker() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    trackPageView(pathname);
+  }, [pathname]);
+  return null;
+}
 
 function ScrollToTop() {
   const { pathname, hash } = useLocation();
@@ -85,6 +94,7 @@ function MainLayout() {
 export default function App() {
   return (
     <Router>
+      <PageTracker />
       <ScrollToTop />
       <MainLayout />
     </Router>

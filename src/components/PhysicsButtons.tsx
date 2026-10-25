@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { trackButtonClick } from '../hooks/useClickTracking';
 
 interface PhysicsButtonsProps {
   titleRef?: React.RefObject<HTMLHeadingElement>;
@@ -235,23 +236,6 @@ export function PhysicsButtons({ titleRef }: PhysicsButtonsProps) {
         }
       }
 
-      // 2. Sketch Framework Exclusion (protect bottom-left corner so Résumé never blocks sketch)
-      const sketchRight = mobileActive ? 180 : 310;
-      const sketchTop = currentCh - (mobileActive ? 160 : 240);
-      for (let i = 0; i < bodies.length; i++) {
-        const b = bodies[i];
-        if (b.x - b.radius < sketchRight && b.y + b.radius > sketchTop) {
-          if (b.x < sketchRight) {
-            b.x = sketchRight + b.radius + 4;
-            b.vx = Math.abs(b.vx);
-          }
-          if (b.y > sketchTop) {
-            b.y = sketchTop - b.radius - 4;
-            b.vy = -Math.abs(b.vy);
-          }
-        }
-      }
-
       // Apply transforms
       for (let i = 0; i < bodies.length; i++) {
         const b = bodies[i];
@@ -277,6 +261,9 @@ export function PhysicsButtons({ titleRef }: PhysicsButtonsProps) {
           href={btn.url}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={() => {
+            trackButtonClick(btn.id.replace("btn-", ""));
+          }}
           onMouseEnter={() => {
             if (bodiesRef.current[i]) bodiesRef.current[i].isHovered = true;
           }}

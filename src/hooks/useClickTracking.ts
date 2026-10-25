@@ -106,7 +106,117 @@ export function trackProjectClick(slug: string): void {
 }
 
 /**
- * React hook that guarantees tracking initialization on mount and provides trackClick.
+ * Fires a tracking beacon for page views.
+ * Debounces visits to the same page within 3000ms.
+ * Automatically excludes /admin and /dashboard routes.
+ */
+export function trackPageView(pathname: string): void {
+  try {
+    if (typeof window === "undefined") return;
+    if (!pathname || pathname.startsWith("/admin") || pathname.startsWith("/dashboard")) {
+      return;
+    }
+
+    const pageSlug = pathname === "/" ? "page:home" : `page:${pathname.replace(/^\//, "").replace(/\//g, "-")}`;
+    const now = Date.now();
+    const lastVisit = lastClickTimestamps.get(pageSlug) || 0;
+    if (now - lastVisit < 3000) {
+      return;
+    }
+    lastClickTimestamps.set(pageSlug, now);
+
+    updateScrollDepth();
+
+    const payload = {
+      type: "pageview",
+      slug: pageSlug,
+      referrer: typeof document !== "undefined" ? document.referrer || "" : "",
+      timeOnPageMs: Math.max(0, now - globalPageLoadTime),
+      scrollDepthPct: globalMaxScrollPct,
+      viewport: `${window.innerWidth}x${window.innerHeight}`,
+    };
+
+    const serialized = JSON.stringify(payload);
+    const endpoint = "/api/click";
+
+    let sent = false;
+    if (typeof navigator !== "undefined" && typeof navigator.sendBeacon === "function") {
+      try {
+        const blob = new Blob([serialized], { type: "text/plain" });
+        sent = navigator.sendBeacon(endpoint, blob);
+      } catch {
+        sent = false;
+      }
+    }
+
+    if (!sent && typeof fetch === "function") {
+      fetch(endpoint, {
+        method: "POST",
+        keepalive: true,
+        headers: { "Content-Type": "text/plain" },
+        body: serialized,
+      }).catch(() => {});
+    }
+  } catch {
+    // Fail silently
+  }
+}
+
+/**
+ * Fires a tracking beacon for button clicks (LinkedIn, Resume, GitHub, WhatsApp, etc.).
+ * Debounces clicks to the same button within 2000ms.
+ */
+export function trackButtonClick(buttonName: string): void {
+  const slug = buttonName.startsWith("btn:") ? buttonName : `btn:${buttonName}`;
+  try {
+    if (typeof window === "undefined") return;
+
+    const now = Date.now();
+    const lastClick = lastClickTimestamps.get(slug) || 0;
+    if (now - lastClick < 2000) {
+      return;
+    }
+    lastClickTimestamps.set(slug, now);
+
+    updateScrollDepth();
+
+    const payload = {
+      type: "button",
+      slug,
+      referrer: typeof document !== "undefined" ? document.referrer || "" : "",
+      timeOnPageMs: Math.max(0, now - globalPageLoadTime),
+      scrollDepthPct: globalMaxScrollPct,
+      viewport: `${window.innerWidth}x${window.innerHeight}`,
+    };
+
+    const serialized = JSON.stringify(payload);
+    const endpoint = "/api/click";
+
+    let sent = false;
+    if (typeof navigator !== "undefined" && typeof navigator.sendBeacon === "function") {
+      try {
+        const blob = new Blob([serialized], { type: "text/plain" });
+        sent = navigator.sendBeacon(endpoint, blob);
+      } catch {
+        sent = false;
+      }
+    }
+
+    if (!sent && typeof fetch === "function") {
+      fetch(endpoint, {
+        method: "POST",
+        keepalive: true,
+        headers: { "Content-Type": "text/plain" },
+        body: serialized,
+      }).catch(() => {});
+    }
+  } catch {
+    // Fail silently
+  }
+}
+
+/**
+ * React hook that guarantees tracking initialization on mount and provides tracking functions.
  */
 export function useClickTracking() {
   const isMounted = useRef(false);
@@ -125,5 +235,11 @@ export function useClickTracking() {
     trackProjectClick(slug);
   }, []);
 
-  return { trackClick: track };
+  const trackButton = useCallback((buttonName: string) => {
+    trackButtonClick(buttonName);
+  }, []);
+
+  return { trackClick: track, trackButton };
 }
+
+
