@@ -19,12 +19,6 @@ import { Footer } from "./components/Footer";
 import { PrivacyPage } from "./components/PrivacyNotice";
 import { AdminDashboard } from "./components/AdminDashboard";
 import { trackPageView } from "./hooks/useClickTracking";
-import { useLiveFavicon } from "./hooks/useLiveFavicon";
-
-function LiveFaviconController() {
-  useLiveFavicon();
-  return null;
-}
 
 function PageTracker() {
   const { pathname } = useLocation();
@@ -100,7 +94,6 @@ function MainLayout() {
 export default function App() {
   return (
     <Router>
-      <LiveFaviconController />
       <PageTracker />
       <ScrollToTop />
       <MainLayout />
