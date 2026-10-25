@@ -1,31 +1,40 @@
 import { useState } from "react";
 import { PrivacyModal } from "./PrivacyNotice";
+import { contact } from "../content";
 
 export function Footer() {
   const [showPrivacy, setShowPrivacy] = useState(false);
 
   return (
     <>
-      <footer className="w-full bg-clay border-t border-rule py-12 px-6 mt-16">
-        <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
-          <div className="flex flex-col gap-2">
-            <h3 className="text-[20px] font-display font-medium text-ink">
+      <footer className="w-full bg-[#F5F5F7] border-t border-[#E5E5EA] py-10 px-6 sm:px-8">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+          <div className="flex flex-col gap-1.5">
+            <h3 className="text-[18px] font-display font-medium text-ink">
               Reach me, find me, locate me.
             </h3>
             <a 
               href="mailto:yashvijay12@hotmail.com" 
-              className="text-[15px] font-mono font-bold text-[#A33726] hover:text-ink underline underline-offset-4 transition-colors"
+              className="text-[14px] font-display font-semibold text-[#0071E3] hover:underline underline-offset-4 transition-colors"
             >
               yashvijay12@hotmail.com
             </a>
           </div>
           
-          <div className="flex items-center flex-wrap justify-center gap-6 font-mono text-[14px] font-medium">
+          <div className="flex items-center flex-wrap justify-center gap-6 font-display text-[13px] sm:text-[14px] font-medium">
             <a href="https://www.linkedin.com/in/yv12/" target="_blank" rel="noopener noreferrer" className="text-graphite hover:text-ink transition-colors">
-              LinkedIn ↗
+              LinkedIn
             </a>
             <a href="https://github.com/yv12" target="_blank" rel="noopener noreferrer" className="text-graphite hover:text-ink transition-colors">
-              GitHub ↗
+              GitHub
+            </a>
+            <a
+              href={`https://wa.me/${contact.whatsappPhone.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(contact.whatsappMessage)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#15803D] hover:text-[#166534] font-semibold transition-colors inline-flex items-center gap-1"
+            >
+              <span>WhatsApp</span>
             </a>
             <button
               type="button"
@@ -35,6 +44,11 @@ export function Footer() {
               Privacy Notice
             </button>
           </div>
+        </div>
+        <div className="max-w-7xl mx-auto mt-3 text-center">
+          <p className="text-[11px] sm:text-[12px] font-display text-graphite/60">
+            © 2026 Yash Vijayvargiya
+          </p>
         </div>
       </footer>
       <PrivacyModal isOpen={showPrivacy} onClose={() => setShowPrivacy(false)} />

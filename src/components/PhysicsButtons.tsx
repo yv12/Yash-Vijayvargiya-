@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 
 interface PhysicsButtonsProps {
-  titleRef: React.RefObject<HTMLHeadingElement>;
+  titleRef?: React.RefObject<HTMLHeadingElement>;
 }
 
 interface BodyState {
@@ -39,8 +39,8 @@ const BUTTONS = [
   },
   {
     id: 'btn-resume',
-    label: 'Résumé',
-    url: 'https://drive.google.com/file/d/1JZkzoh-SYACCPBsUqiDshAnVTsgCiWC_/view?usp=sharing',
+    label: 'Resume',
+    url: 'https://drive.google.com/file/d/1TKhl1kR3h-OcTaY4xYclH65ij-VAWY-X/view?usp=sharing',
     brandClass: 'physics-btn-resume',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="14" height="14" style={{ flexShrink: 0 }}>
@@ -70,13 +70,13 @@ export function PhysicsButtons({ titleRef }: PhysicsButtonsProps) {
 
     // Responsive initial physics state based on container dimensions
     const bodies: BodyState[] = BUTTONS.map((_, i) => {
-      // Safe distributed starting positions that never overflow on small screens
+      // Safe distributed starting positions in outer corners away from text
       const defaultX = isMobile
-        ? Math.min(cw - 50, Math.max(50, (cw / 4) * (i + 1)))
-        : 120 + i * 160;
+        ? (i === 0 ? 65 : i === 1 ? cw - 70 : cw - 75)
+        : (i === 0 ? 110 : i === 1 ? cw - 130 : cw - 150);
       const defaultY = isMobile
-        ? (i === 0 ? 68 : i === 1 ? ch - 72 : 115)
-        : 90 + (i % 2) * 120;
+        ? (i === 0 ? 55 : i === 1 ? 55 : ch - 55)
+        : (i === 0 ? 80 : i === 1 ? 85 : ch - 85);
 
       const baseSpeed = isMobile ? 0.85 : 1.2;
 
@@ -144,7 +144,7 @@ export function PhysicsButtons({ titleRef }: PhysicsButtonsProps) {
         }
       }
 
-      // Circle-Circle collisions
+      // Circle-Circle collisions (bounce off each other)
       for (let i = 0; i < bodies.length; i++) {
         for (let j = i + 1; j < bodies.length; j++) {
           const b1 = bodies[i];
@@ -155,36 +155,48 @@ export function PhysicsButtons({ titleRef }: PhysicsButtonsProps) {
           const min_dist = b1.radius + b2.radius;
 
           if (dist < min_dist && dist > 0.01) {
-            const angle = Math.atan2(dy, dx);
-            const targetX = b1.x + Math.cos(angle) * min_dist;
-            const targetY = b1.y + Math.sin(angle) * min_dist;
-            const ax = (targetX - b2.x) * 0.12;
-            const ay = (targetY - b2.y) * 0.12;
-            
-            b1.vx -= ax;
-            b1.vy -= ay;
-            b2.vx += ax;
-            b2.vy += ay;
+            const nx = dx / dist;
+            const ny = dy / dist;
+
+            // Separate overlapping circles
+            const overlap = (min_dist - dist) * 0.5;
+            b1.x -= nx * overlap;
+            b1.y -= ny * overlap;
+            b2.x += nx * overlap;
+            b2.y += ny * overlap;
+
+            // Elastic bounce along collision normal
+            const kx = b1.vx - b2.vx;
+            const ky = b1.vy - b2.vy;
+            const p = nx * kx + ny * ky;
+
+            if (p > 0) {
+              b1.vx -= p * nx;
+              b1.vy -= p * ny;
+              b2.vx += p * nx;
+              b2.vy += p * ny;
+            }
           }
         }
       }
 
-      // Circle-AABB collision (Title heading)
-      if (titleRef.current) {
+      // 1. Strict Circle-AABB collision with the Title Heading (ensures buttons NEVER overlap headline)
+      if (titleRef?.current) {
         const cRect = container.getBoundingClientRect();
         const tRect = titleRef.current.getBoundingClientRect();
         
-        const padding = mobileActive ? 8 : 12;
+        // Generous protective perimeter around headline
+        const padX = mobileActive ? 24 : 48;
+        const padY = mobileActive ? 20 : 36;
         const titleBox = {
-          left: (tRect.left - cRect.left) - padding,
-          right: (tRect.right - cRect.left) + padding,
-          top: (tRect.top - cRect.top) - padding,
-          bottom: (tRect.bottom - cRect.top) + padding
+          left: (tRect.left - cRect.left) - padX,
+          right: (tRect.right - cRect.left) + padX,
+          top: (tRect.top - cRect.top) - padY,
+          bottom: (tRect.bottom - cRect.top) + padY
         };
 
         for (let i = 0; i < bodies.length; i++) {
           const b = bodies[i];
-          
           const closestX = Math.max(titleBox.left, Math.min(b.x, titleBox.right));
           const closestY = Math.max(titleBox.top, Math.min(b.y, titleBox.bottom));
           
@@ -194,7 +206,18 @@ export function PhysicsButtons({ titleRef }: PhysicsButtonsProps) {
 
           if (distSq < b.radius * b.radius) {
             const dist = Math.sqrt(distSq);
-            if (dist === 0) continue; 
+            if (dist === 0) {
+              const distToLeft = Math.abs(b.x - titleBox.left);
+              const distToRight = Math.abs(titleBox.right - b.x);
+              const distToTop = Math.abs(b.y - titleBox.top);
+              const distToBottom = Math.abs(titleBox.bottom - b.y);
+              const minDist = Math.min(distToLeft, distToRight, distToTop, distToBottom);
+              if (minDist === distToTop) { b.y = titleBox.top - b.radius - 4; b.vy = -Math.abs(b.vy); }
+              else if (minDist === distToBottom) { b.y = titleBox.bottom + b.radius + 4; b.vy = Math.abs(b.vy); }
+              else if (minDist === distToLeft) { b.x = titleBox.left - b.radius - 4; b.vx = -Math.abs(b.vx); }
+              else { b.x = titleBox.right + b.radius + 4; b.vx = Math.abs(b.vx); }
+              continue;
+            }
             
             const overlap = b.radius - dist;
             const nx = dx / dist;
@@ -203,10 +226,28 @@ export function PhysicsButtons({ titleRef }: PhysicsButtonsProps) {
             b.x += nx * overlap;
             b.y += ny * overlap;
 
-            // Reflect velocity
-            const dotProduct = (b.vx * nx + b.vy * ny);
-            b.vx = b.vx - 2 * dotProduct * nx;
-            b.vy = b.vy - 2 * dotProduct * ny;
+            const dotProduct = b.vx * nx + b.vy * ny;
+            if (dotProduct < 0) {
+              b.vx = b.vx - 1.8 * dotProduct * nx;
+              b.vy = b.vy - 1.8 * dotProduct * ny;
+            }
+          }
+        }
+      }
+
+      // 2. Sketch Framework Exclusion (protect bottom-left corner so Résumé never blocks sketch)
+      const sketchRight = mobileActive ? 180 : 310;
+      const sketchTop = currentCh - (mobileActive ? 160 : 240);
+      for (let i = 0; i < bodies.length; i++) {
+        const b = bodies[i];
+        if (b.x - b.radius < sketchRight && b.y + b.radius > sketchTop) {
+          if (b.x < sketchRight) {
+            b.x = sketchRight + b.radius + 4;
+            b.vx = Math.abs(b.vx);
+          }
+          if (b.y > sketchTop) {
+            b.y = sketchTop - b.radius - 4;
+            b.vy = -Math.abs(b.vy);
           }
         }
       }
@@ -252,7 +293,6 @@ export function PhysicsButtons({ titleRef }: PhysicsButtonsProps) {
         >
           <span className="bubble-icon-wrap">{btn.icon}</span>
           <span className="bubble-label">{btn.label}</span>
-          <span className="bubble-arrow">↗</span>
         </a>
       ))}
     </div>

@@ -68,9 +68,9 @@ export function PathTimeline() {
                   x={n.x}
                   y={above ? n.y - 44 : n.y + 40}
                   textAnchor="middle"
-                  fill="#12151A"
+                  fill="#1D1D1F"
                   fontSize="15"
-                  fontFamily="Bricolage Grotesque, sans-serif"
+                  fontFamily="var(--font-display)"
                   fontWeight="600"
                 >
                   {s.place}
@@ -79,9 +79,9 @@ export function PathTimeline() {
                   x={n.x}
                   y={above ? n.y - 26 : n.y + 58}
                   textAnchor="middle"
-                  fill="#5F6873"
+                  fill="#86868B"
                   fontSize="11"
-                  fontFamily="IBM Plex Mono, monospace"
+                  fontFamily="var(--font-body)"
                 >
                   {s.role}
                 </text>
@@ -89,9 +89,9 @@ export function PathTimeline() {
                   x={n.x}
                   y={above ? n.y - 12 : n.y + 72}
                   textAnchor="middle"
-                  fill="#5F6873"
+                  fill="#86868B"
                   fontSize="11"
-                  fontFamily="IBM Plex Mono, monospace"
+                  fontFamily="var(--font-body)"
                 >
                   {s.when}
                 </text>
@@ -209,7 +209,8 @@ export function Lenses() {
             textAnchor="middle"
             fill="#EAECE7"
             fontSize="12"
-            fontFamily="IBM Plex Mono, monospace"
+            fontFamily="var(--font-display)"
+            fontWeight="600"
           >
             Worth
           </text>
@@ -219,21 +220,22 @@ export function Lenses() {
             textAnchor="middle"
             fill="#EAECE7"
             fontSize="12"
-            fontFamily="IBM Plex Mono, monospace"
+            fontFamily="var(--font-display)"
+            fontWeight="600"
           >
             building
           </text>
 
-          <text x="150" y="110" textAnchor="middle" fill="#12151A" fontSize="14" fontFamily="Bricolage Grotesque, sans-serif" fontWeight="600">
+          <text x="150" y="110" textAnchor="middle" fill="#1D1D1F" fontSize="14" fontFamily="var(--font-display)" fontWeight="600">
             User need
           </text>
-          <text x="382" y="110" textAnchor="middle" fill="#12151A" fontSize="14" fontFamily="Bricolage Grotesque, sans-serif" fontWeight="600">
+          <text x="382" y="110" textAnchor="middle" fill="#1D1D1F" fontSize="14" fontFamily="var(--font-display)" fontWeight="600">
             Business value
           </text>
-          <text x="140" y="420" textAnchor="middle" fill="#12151A" fontSize="14" fontFamily="Bricolage Grotesque, sans-serif" fontWeight="600">
+          <text x="140" y="420" textAnchor="middle" fill="#1D1D1F" fontSize="14" fontFamily="var(--font-display)" fontWeight="600">
             Feasibility
           </text>
-          <text x="392" y="420" textAnchor="middle" fill="#12151A" fontSize="14" fontFamily="Bricolage Grotesque, sans-serif" fontWeight="600">
+          <text x="392" y="420" textAnchor="middle" fill="#1D1D1F" fontSize="14" fontFamily="var(--font-display)" fontWeight="600">
             AI fit
           </text>
         </svg>

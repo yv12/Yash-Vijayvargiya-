@@ -1,555 +1,81 @@
-import { useState, type ReactNode } from "react";
-import { Chapter, Draw, LaunchLink, Note, P, SectionHeader } from "../ui";
-import { artifacts, blinkit, chapters, fraud, hdfc, ocr } from "../content";
-import { useScrollProgress } from "../hooks/useScrollMotion";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { CASE_STUDIES, type CaseStudyProject } from "../data/caseStudies";
+import { CaseStudyCarousel } from "../components/case-studies/CaseStudyCarousel";
+import { CaseStudyModal } from "../components/case-studies/CaseStudyModal";
+import { TakeawaysSection } from "./Takeaways";
 
-const ch = (id: string) => chapters.find((c) => c.id === id)!;
+export function WorkHeader() { return null; }
 
-/* ------------------------------------------------------------------ work section wrapper */
+export function WorkShowcase() {
+  const location = useLocation();
+  const [activeProject, setActiveProject] = useState<CaseStudyProject | null>(null);
 
-function WorkSectionShift({
-  children,
-}: {
-  children: ReactNode;
-  side?: "left" | "right";
-}) {
+  useEffect(() => {
+    const hash = location.hash.replace("#", "");
+    if (hash) {
+      const matched = CASE_STUDIES.find(
+        (p) => p.id === hash || hash.includes(p.id) || p.id.includes(hash)
+      );
+      if (matched) setActiveProject(matched);
+    }
+  }, [location.hash]);
+
+  const handleOpenDossier = (project: CaseStudyProject) => {
+    setActiveProject(project);
+    window.history.replaceState(null, "", `#${project.id}`);
+  };
+
+  const handleCloseDossier = () => {
+    setActiveProject(null);
+    window.history.replaceState(null, "", window.location.pathname);
+  };
+
   return (
-    <div className="w-full flex flex-col items-center">
-      {children}
-    </div>
-  );
-}
+    <div className="bg-[#F5F5F7] font-body text-[#1D1D1F] antialiased">
 
-export function WorkTelemetryHUD() {
-  const { progress, scrollY, direction } = useScrollProgress();
-  const percent = Math.round(progress * 100);
-
-  return (
-    <aside className="work-telemetry-hud hidden md:block" aria-label="Work telemetry feed">
-      <div className="work-telemetry-panel">
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-1.5">
-            <span className="work-telemetry-pulse" />
-            <span className="font-mono text-[9px] font-bold tracking-widest text-[#1B3AC7] uppercase">
-              SYS.TELEMETRY
+      {/* ── Hero: exactly one screen tall, everything above the fold ── */}
+      <section
+        className="relative w-full overflow-hidden flex flex-col items-center justify-between pt-3 pb-2 sm:pt-5 sm:pb-3"
+        style={{ height: "100dvh", maxHeight: "100dvh" }}
+      >
+        {/* Compact headline (40 to 52px tall) */}
+        <div className="flex-shrink-0 text-center px-4 h-[42px] sm:h-[50px] flex items-center justify-center">
+          <h1 className="text-[19px] sm:text-[24px] md:text-[28px] font-bold tracking-tight leading-tight">
+            <span className="bg-gradient-to-r from-[#D91A5B] via-[#E82B6A] to-[#FF6B55] bg-clip-text text-transparent">
+              The case studies.{" "}
             </span>
-          </div>
-          <span className="font-mono text-[10px] font-bold text-[#1B3AC7]">
-            {direction === "down" ? "▼ DN" : "▲ UP"}
-          </span>
+            <span className="text-[#6E6E73]">
+              How I solve problems &amp; ship systems.
+            </span>
+          </h1>
         </div>
-        <div className="flex items-baseline justify-between gap-3 font-mono text-[11px] text-graphite mt-1.5">
-          <span>PROGRESS: {percent}%</span>
-          <span>{Math.round(scrollY)}px</span>
-        </div>
-        <div className="work-telemetry-track mt-1.5">
-          <div
-            className="work-telemetry-fill"
-            style={{ width: `${Math.min(100, Math.max(4, percent))}%` }}
+
+        {/* Carousel takes the leftover height: cards, caption, dots all inside */}
+        <div className="flex-1 w-full min-h-0 flex flex-col justify-center items-center overflow-hidden">
+          <CaseStudyCarousel
+            projects={CASE_STUDIES}
+            onOpenDossier={handleOpenDossier}
           />
         </div>
-      </div>
-    </aside>
-  );
-}
+      </section>
 
-/* ------------------------------------------------------------------ work section header */
+      {/* ── Below the fold: Takeaways Section ── */}
+      <TakeawaysSection isEmbedded />
 
-export function WorkHeader() {
-  const cases = [
-    { label: "Blinkit", href: "#blinkit" },
-    { label: "OCR", href: "#ocr" },
-    { label: "All Projects", href: "#build" },
-    { label: "HDFC", href: "#hdfc" },
-    { label: "Fraud", href: "#fraud" },
-  ];
-  return (
-    <>
-      <SectionHeader
-        label="Case Studies"
-        meta="5 case studies · hypothesis, evidence, live demos"
-        accent="#1B3AC7"
+      {/* Deep-Dive Modal */}
+      <CaseStudyModal
+        project={activeProject}
+        allProjects={CASE_STUDIES}
+        onClose={handleCloseDossier}
+        onSelectProject={setActiveProject}
       />
-      <WorkTelemetryHUD />
-      {/* Jump nav */}
-      <div className="mx-auto max-w-page px-4 sm:px-10 lg:px-16">
-        <nav aria-label="Case study sections" className="work-jump-nav flex flex-wrap gap-1.5 sm:gap-2 py-3 sm:py-4">
-          <span className="font-mono text-[10px] text-graphite uppercase tracking-widest self-center mr-1 sm:mr-2">Jump to:</span>
-          {cases.map((c) => (
-            <a key={c.href} href={c.href} className="work-jump-pill text-[10px] sm:text-[11px] py-1 px-2.5 sm:py-1.5 sm:px-3">
-              {c.label}
-            </a>
-          ))}
-        </nav>
-      </div>
-    </>
-  );
-}
-
-/* ------------------------------------------------------------------ dossier header */
-
-function DossierHeader({
-  kind,
-  kindColor,
-  context,
-  href,
-  hrefLabel,
-  trackingSlug,
-}: {
-  kind: string;
-  kindColor: string;
-  context: string;
-  href?: string;
-  hrefLabel?: string;
-  trackingSlug?: string;
-}) {
-  return (
-    <div className="dossier-header w-full">
-      <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 justify-between w-full">
-        <span
-          className="dossier-kind-badge"
-          style={{ color: kindColor, borderColor: `${kindColor}55` }}
-        >
-          {kind}
-        </span>
-        {href && hrefLabel && (
-          <LaunchLink href={href} accent={kindColor} size="md" trackingSlug={trackingSlug}>
-            {hrefLabel}
-          </LaunchLink>
-        )}
-      </div>
-      <p className="font-mono text-[11px] sm:text-[12px] text-graphite mt-1">{context}</p>
     </div>
   );
 }
 
-/* --------------------------------------------------------- swipe demo (ch 7) */
-
-type Verdict = "Skipped" | "Saved for later" | "Added";
-
-function SwipeDemo() {
-  const [i, setI] = useState(0);
-  const [log, setLog] = useState<{ product: string; verdict: Verdict }[]>([]);
-
-  const card = blinkit.cards[i];
-
-  function decide(verdict: Verdict) {
-    if (!card) return;
-    setLog((l) => [...l, { product: card.product, verdict }]);
-    setI((n) => n + 1);
-  }
-
-  return (
-    <div className="mt-10 max-w-[720px] w-full">
-      <p className="tag">{blinkit.demoLabel}</p>
-
-      <div className="mt-4 border border-rule bg-paper p-5 sm:p-6 rounded-xl sm:rounded-none">
-        {card ? (
-          <>
-            <p className="tag text-signal">{card.level}</p>
-            <p className="mt-4 text-[22px] sm:text-[24px] leading-tight font-display">
-              {card.product}
-            </p>
-            <p className="measure mt-3 text-[16px] sm:text-[17px] text-graphite">{card.bridge}</p>
-
-            <div className="mt-6 flex flex-wrap gap-2.5 sm:gap-3">
-              <button type="button" className="btn flex-1 sm:flex-none text-center py-2.5" onClick={() => decide("Skipped")}>
-                Skip
-              </button>
-              <button
-                type="button"
-                className="btn flex-1 sm:flex-none text-center py-2.5"
-                onClick={() => decide("Saved for later")}
-              >
-                Later
-              </button>
-              <button type="button" className="btn flex-1 sm:flex-none text-center py-2.5" onClick={() => decide("Added")}>
-                Want it now
-              </button>
-            </div>
-          </>
-        ) : (
-          <>
-            <p className="text-[19px]">
-              That is the whole rail. Three honest reasons, and nothing padded out to
-              fill a fourth slot.
-            </p>
-            <button
-              type="button"
-              className="btn mt-6"
-              onClick={() => {
-                setI(0);
-                setLog([]);
-              }}
-            >
-              Run it again
-            </button>
-          </>
-        )}
-      </div>
-
-      <p className="tag mt-3" aria-live="polite">
-        {log.length === 0
-          ? blinkit.demoNote
-          : log.map((l) => `${l.product}: ${l.verdict}`).join(" / ")}
-      </p>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ ch. 07 */
-
-export function Blinkit() {
-  const c = ch("blinkit");
-  const max = Math.max(...blinkit.split.map((s) => s.value));
-
-  return (
-    <Chapter id={c.id} number={c.number} title={c.title} band>
-      <WorkSectionShift side="left">
-        <DossierHeader
-          kind="Fellowship project"
-          kindColor="#1B3AC7"
-          context={blinkit.context}
-        />
-
-        <P>
-          <strong className="font-semibold">The goal.</strong> {blinkit.goal}
-        </P>
-        <P>{blinkit.hypothesis}</P>
-        <P>{blinkit.method}</P>
-
-        <div className="mt-12 grid max-w-[760px] gap-px border border-rule bg-rule sm:grid-cols-2 lg:grid-cols-4">
-          {blinkit.pipeline.map((step) => (
-            <div key={step.label} className="bg-paper p-5">
-              <p className="font-display text-[26px] leading-none">{step.value}</p>
-              <p className="tag mt-2">{step.label}</p>
-            </div>
-          ))}
-        </div>
-
-        <Draw className="mt-12 max-w-[760px] w-full p-6 sm:p-8 bg-paper border border-rule rounded-xl shadow-sm">
-          <svg
-            viewBox="0 0 700 210"
-            className="w-full"
-            role="img"
-            aria-label={`What the reviews split into: ${blinkit.split
-              .map((s) => `${s.label}, ${s.value.toLocaleString()}`)
-              .join("; ")}.`}
-          >
-            {blinkit.split.map((s, idx) => {
-              const y = 30 + idx * 48;
-              const w = Math.max(12, (s.value / max) * 440);
-              const last = idx === blinkit.split.length - 1;
-              return (
-                <g key={s.label}>
-                  {/* Track background */}
-                  <line
-                    x1="0"
-                    y1={y}
-                    x2="440"
-                    y2={y}
-                    stroke="#12151A"
-                    strokeWidth="12"
-                    strokeOpacity="0.06"
-                    strokeLinecap="round"
-                  />
-                  {/* Filled bar with animated length */}
-                  <line
-                    x1="0"
-                    y1={y}
-                    x2={w}
-                    y2={y}
-                    stroke={last ? "#1B3AC7" : "#454D59"}
-                    strokeWidth="12"
-                    strokeOpacity={last ? 1 : 0.65}
-                    strokeLinecap="round"
-                    style={{ ["--len" as string]: w }}
-                  />
-                  <text
-                    x="0"
-                    y={y - 12}
-                    fill="#12151A"
-                    fontSize="14"
-                    fontFamily="IBM Plex Mono, monospace"
-                    fontWeight="700"
-                  >
-                    {s.label}
-                  </text>
-                  <text
-                    x={w + 14}
-                    y={y + 5}
-                    fill={last ? "#1B3AC7" : "#12151A"}
-                    fontSize="15"
-                    fontFamily="IBM Plex Mono, monospace"
-                    fontWeight="700"
-                  >
-                    {s.value.toLocaleString()}
-                  </text>
-                </g>
-              );
-            })}
-          </svg>
-        </Draw>
-
-        <P>{blinkit.insight}</P>
-        <P>{blinkit.interviews}</P>
-
-        <div className="mt-10 max-w-[760px] border border-rule bg-paper">
-          <div className="p-6">
-            <p className="tag">{blinkit.reframe.fromLabel}</p>
-            <p className="mt-2 text-[19px] text-graphite line-through decoration-1">
-              {blinkit.reframe.from}
-            </p>
-          </div>
-          <div className="border-t border-rule p-6">
-            <p className="tag text-signal">{blinkit.reframe.toLabel}</p>
-            <p className="mt-2 text-[19px]">{blinkit.reframe.to}</p>
-          </div>
-        </div>
-
-        {blinkit.solution.map((t) => (
-          <P key={t.slice(0, 20)}>{t}</P>
-        ))}
-
-        <SwipeDemo />
-
-        <Note>{blinkit.honesty}</Note>
-
-        {/* Prominent link block */}
-        <div className="mt-10 max-w-[760px] w-full border border-rule/80 rounded-xl bg-paper/90 backdrop-blur-sm p-5 sm:p-7 shadow-sm flex flex-col sm:flex-row gap-4 sm:gap-5 items-start sm:items-center justify-between border-l-4 border-l-[#1B3AC7]">
-          <div className="text-left">
-            <div className="flex items-center gap-2">
-              <span className="font-mono text-[10px] font-bold text-[#1B3AC7] uppercase tracking-widest bg-[#1B3AC7]/10 px-2 py-0.5 rounded">SYS.DEPLOYED // LIVE</span>
-            </div>
-            <p className="font-display text-[17px] sm:text-[18px] font-semibold text-ink mt-2">Blinkit Live Environments</p>
-            <p className="text-[13px] sm:text-[14px] text-graphite mt-0.5">Two distinct systems live in production. Test both models directly.</p>
-          </div>
-          <div className="flex flex-wrap gap-2.5 sm:gap-3 w-full sm:w-auto">
-            {blinkit.links.map((l) => (
-              <LaunchLink
-                key={l.href}
-                href={l.href}
-                accent="#1B3AC7"
-                size="md"
-                trackingSlug={l.label.includes("Swipe") ? "blinkit-swipe" : "blinkit-discovery"}
-              >
-                {l.label}
-              </LaunchLink>
-            ))}
-          </div>
-        </div>
-      </WorkSectionShift>
-    </Chapter>
-  );
-}
-
-/* ------------------------------------------------------------------ ch. 08 */
-
-export function Ocr() {
-  const c = ch("ocr");
-  return (
-    <Chapter id={c.id} number={c.number} title={c.title}>
-      <WorkSectionShift side="right">
-        <DossierHeader
-          kind="Professional (client work)"
-          kindColor="#1F5C58"
-          context={ocr.context}
-        />
-
-        {ocr.body.map((t) => (
-          <P key={t.slice(0, 20)}>{t}</P>
-        ))}
-
-        <div className="mt-12 max-w-[560px] border border-rule bg-paper p-6 w-full text-left">
-          <p className="tag">One record, after processing</p>
-          <dl className="mt-5 space-y-4">
-            <div className="flex gap-6">
-              <dt className="tag w-28 shrink-0 pt-1">Name</dt>
-              <dd className="font-mono text-[14px]">Read as text</dd>
-            </div>
-            <div className="flex gap-6">
-              <dt className="tag w-28 shrink-0 pt-1">Amount</dt>
-              <dd className="font-mono text-[14px]">Read as text</dd>
-            </div>
-            <div className="flex gap-6">
-              <dt className="tag w-28 shrink-0 pt-1">Signature</dt>
-              <dd>
-                <span className="inline-block border border-dashed border-signal/60 bg-signal/[0.05] px-3 py-2 font-mono text-[12px] text-signal">
-                  kept as an image, not guessed
-                </span>
-              </dd>
-            </div>
-          </dl>
-        </div>
-
-        <P>{ocr.decision}</P>
-        <P>{ocr.choice}</P>
-        <P>
-          <strong className="font-semibold">Result.</strong> {ocr.outcome}
-        </P>
-        <Note>{ocr.lesson}</Note>
-      </WorkSectionShift>
-    </Chapter>
-  );
-}
-
-/* ------------------------------------------------------------------ ch. 09 */
-
-export function Build() {
-  const c = ch("build");
-  return (
-    <Chapter id={c.id} number={c.number} title={c.title} band>
-      <WorkSectionShift side="left">
-        <DossierHeader
-          kind="All projects"
-          kindColor="#7A5716"
-          context="Client work stays anonymised. Fellowship and personal projects are labelled — so you can tell what was shipped for a paying client and what I built to learn something."
-        />
-
-        <ul className="mt-4 grid gap-px border border-rule bg-rule md:grid-cols-2 w-full max-w-[900px]">
-          {artifacts.map((a) => (
-            <li key={a.name} className="flex flex-col bg-paper p-6 text-left">
-              <div className="flex items-start justify-between gap-2">
-                <p
-                  className="dossier-kind-badge self-start"
-                  style={{
-                    color: a.kind === "Professional" ? "#1F5C58" : a.kind === "Fellowship" ? "#1B3AC7" : "#7A5716",
-                    borderColor: a.kind === "Professional" ? "#1F5C5855" : a.kind === "Fellowship" ? "#1B3AC755" : "#7A571655",
-                  }}
-                >
-                  {a.kind}
-                </p>
-                {a.href && (
-                  <LaunchLink
-                    href={a.href}
-                    accent={a.kind === "Professional" ? "#1F5C58" : a.kind === "Fellowship" ? "#1B3AC7" : "#7A5716"}
-                    size="sm"
-                    trackingSlug={a.slug}
-                  >
-                    Open
-                  </LaunchLink>
-                )}
-              </div>
-              <h3 className="mt-3 text-[19px] leading-tight font-display">{a.name}</h3>
-              <p className="mt-2 text-[15px] text-graphite flex-1">{a.line}</p>
-              <p className="tag mt-4 text-[11px]">{a.stack}</p>
-            </li>
-          ))}
-        </ul>
-      </WorkSectionShift>
-    </Chapter>
-  );
-}
-
-/* ------------------------------------------------------------------ ch. 10 */
-
-export function Hdfc() {
-  const c = ch("hdfc");
-  return (
-    <Chapter id={c.id} number={c.number} title={c.title}>
-      <WorkSectionShift side="right">
-        <DossierHeader
-          kind="Fellowship project"
-          kindColor="#1B3AC7"
-          context={hdfc.context}
-        />
-
-        {hdfc.body.map((t) => (
-          <P key={t.slice(0, 20)}>{t}</P>
-        ))}
-
-        <ol className="mt-10 flex flex-wrap items-center gap-x-3 gap-y-3">
-          {["Question", "PII scan", "Scope check", "Retrieve", "Citation check", "Answer"].map(
-            (step, i, arr) => (
-              <li key={step} className="flex items-center gap-3">
-                <span className="border border-rule bg-paper px-3 py-2 font-mono text-[12px]">
-                  {step}
-                </span>
-                {i < arr.length - 1 && (
-                  <span aria-hidden="true" className="block h-px w-4 bg-rule" />
-                )}
-              </li>
-            )
-          )}
-        </ol>
-        <p className="tag mt-3">Any step can stop the answer. None of them can invent one.</p>
-
-        <P>{hdfc.infra}</P>
-
-        {/* Prominent CTA */}
-        <div className="mt-10 max-w-[620px] w-full border border-rule/80 rounded-xl bg-paper/90 backdrop-blur-sm p-6 sm:p-7 shadow-sm flex flex-col sm:flex-row gap-5 items-start sm:items-center justify-between border-l-4 border-l-[#1B3AC7]">
-          <div className="text-left">
-            <div className="flex items-center gap-2">
-              <span className="font-mono text-[10px] font-bold text-[#1B3AC7] uppercase tracking-widest bg-[#1B3AC7]/10 px-2 py-0.5 rounded">LIVE PRODUCTION TOOL</span>
-            </div>
-            <p className="font-display text-[18px] font-semibold text-ink mt-2">HDFC Scheme Assistant</p>
-            <p className="text-[14px] text-graphite mt-0.5">Query five active mutual fund schemes with citation verification.</p>
-          </div>
-          <LaunchLink href={hdfc.href} accent="#1B3AC7" size="md" trackingSlug="hdfc">
-            Open assistant
-          </LaunchLink>
-        </div>
-      </WorkSectionShift>
-    </Chapter>
-  );
-}
-
-/* ------------------------------------------------------------------ ch. 11 */
-
-export function Fraud() {
-  const c = ch("fraud");
-  return (
-    <Chapter id={c.id} number={c.number} title={c.title} band>
-      <WorkSectionShift side="left">
-        <DossierHeader
-          kind="Personal project"
-          kindColor="#A33726"
-          context={fraud.context}
-        />
-
-        {fraud.body.map((t) => (
-          <P key={t.slice(0, 20)}>{t}</P>
-        ))}
-
-        <div className="mt-12 max-w-[620px] border border-rule bg-paper w-full">
-          <div className="p-6">
-            <p className="tag">{fraud.gate.label}</p>
-            <ul className="mt-4 space-y-3">
-              {fraud.gate.conditions.map((cond) => (
-                <li key={cond} className="flex items-baseline gap-3">
-                  <span aria-hidden="true" className="tag text-signal">
-                    and
-                  </span>
-                  <span className="font-mono text-[14px]">{cond}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="border-t border-rule p-6">
-            <p className="tag">{fraud.gate.verdictLabel}</p>
-            <p className="mt-2 font-display text-[28px] leading-none text-flag">
-              {fraud.gate.verdict}
-            </p>
-            <p className="measure mt-3 text-[17px] text-graphite">
-              {fraud.gate.verdictNote}
-            </p>
-          </div>
-        </div>
-
-        {/* Prominent CTA */}
-        <div className="mt-10 max-w-[620px] w-full border border-rule/80 rounded-xl bg-paper/90 backdrop-blur-sm p-6 sm:p-7 shadow-sm flex flex-col sm:flex-row gap-5 items-start sm:items-center justify-between border-l-4 border-l-[#A33726]">
-          <div className="text-left">
-            <div className="flex items-center gap-2">
-              <span className="font-mono text-[10px] font-bold text-[#A33726] uppercase tracking-widest bg-[#A33726]/10 px-2 py-0.5 rounded">LIVE PIPELINE MONITOR</span>
-            </div>
-            <p className="font-display text-[18px] font-semibold text-ink mt-2">Model Promotion Lifecycle</p>
-            <p className="text-[14px] text-graphite mt-0.5">Staging shadow score, rejection gate, and live drift monitor.</p>
-          </div>
-          <LaunchLink href={fraud.href} accent="#A33726" size="md" trackingSlug="fraud">
-            Open pipeline
-          </LaunchLink>
-        </div>
-      </WorkSectionShift>
-    </Chapter>
-  );
-}
+export function Blinkit() { return null; }
+export function Ocr() { return null; }
+export function Build() { return null; }
+export function Hdfc() { return null; }
+export function Fraud() { return null; }

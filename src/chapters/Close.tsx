@@ -139,8 +139,8 @@ function CircularLoop() {
                   dominantBaseline="middle"
                   fill={isFirst ? "#fff" : LOOP_ACCENT}
                   fontSize="12"
-                  fontFamily="IBM Plex Mono, monospace"
-                  fontWeight="700"
+                  fontFamily="var(--font-display)"
+                  fontWeight="600"
                   letterSpacing="-0.01em"
                 >
                   {step}
@@ -155,10 +155,10 @@ function CircularLoop() {
           x={LOOP_CX}
           y={LOOP_CY - 8}
           textAnchor="middle"
-          fill="#5F6873"
+          fill="#86868B"
           fontSize="13"
-          fontFamily="IBM Plex Mono, monospace"
-          fontWeight="600"
+          fontFamily="var(--font-body)"
+          fontWeight="500"
         >
           Own the
         </text>
@@ -166,10 +166,10 @@ function CircularLoop() {
           x={LOOP_CX}
           y={LOOP_CY + 12}
           textAnchor="middle"
-          fill="#12151A"
+          fill="#1D1D1F"
           fontSize="16"
-          fontFamily="Bricolage Grotesque, sans-serif"
-          fontWeight="700"
+          fontFamily="var(--font-display)"
+          fontWeight="600"
         >
           FULL LOOP
         </text>
@@ -191,7 +191,7 @@ export function Systems() {
       <ol className="mt-10 flex flex-wrap items-center gap-x-3 gap-y-3">
         {systems.flow.map((node, i) => (
           <li key={node} className="flex items-center gap-3">
-            <span className="border border-[#1F5C58]/40 bg-[#1F5C58]/08 px-3 py-2 font-mono text-[12px] text-[#1F5C58]">
+            <span className="border border-[#1F5C58]/40 bg-[#1F5C58]/08 px-3 py-2 font-display text-[12px] font-medium text-[#1F5C58]">
               {node}
             </span>
             {i < systems.flow.length - 1 && (
@@ -206,11 +206,11 @@ export function Systems() {
         <div className="border-b border-rule p-6 text-left">
           <h3 className="text-[21px] leading-tight">{systems.onboarding.title}</h3>
           <p className="tag mt-3 text-signal">Trigger</p>
-          <p className="mt-1 font-mono text-[14px]">{systems.onboarding.trigger}</p>
+          <p className="mt-1 font-body text-[14px]">{systems.onboarding.trigger}</p>
         </div>
         <ul className="grid gap-px bg-rule sm:grid-cols-2">
           {systems.onboarding.steps.map((s) => (
-            <li key={s} className="bg-paper p-5 font-mono text-[13px] text-left">
+            <li key={s} className="bg-paper p-5 font-body text-[13px] text-left">
               {s}
             </li>
           ))}
@@ -233,19 +233,19 @@ export function Direction() {
         <P key={t.slice(0, 20)}>{t}</P>
       ))}
 
-      {/* Circular loop diagram — the main visual hero of Vision */}
+      {/* Circular loop diagram: the main visual hero of Vision */}
       <CircularLoop />
       <p className="tag mt-6 text-graphite text-center">
-        Not tickets. The full loop — own it, ship it, watch it, improve it.
+        Not tickets. The full loop: own it, ship it, watch it, improve it.
       </p>
 
-      {/* Skill orbit — promoted as the central hero moment */}
+      {/* Skill orbit: promoted as the central hero moment */}
       <div className="mt-16 w-full max-w-[900px]">
         <div className="flex items-center gap-3 mb-6 justify-center">
           <span
             className="inline-block w-2 h-2 rounded-full bg-[#1F5C58]"
           />
-          <span className="font-mono text-[11px] font-bold text-[#1F5C58] uppercase tracking-widest">
+          <span className="font-display text-[11px] font-semibold text-[#1F5C58] uppercase tracking-wider">
             Skills in orbit
           </span>
         </div>
@@ -256,7 +256,7 @@ export function Direction() {
       <div className="mt-14 grid gap-10 lg:grid-cols-3 w-full max-w-[900px] text-left">
         {skills.map((s) => (
           <div key={s.group}>
-            <h3 className="font-mono text-[12px] uppercase tracking-wider text-graphite">
+            <h3 className="font-display text-[12px] font-semibold uppercase tracking-wider text-graphite">
               {s.group}
             </h3>
             <ul className="mt-4 space-y-1 text-[17px]">

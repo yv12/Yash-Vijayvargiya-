@@ -229,7 +229,7 @@ export function AdminDashboard() {
 
           <form onSubmit={handleLogin} className="mt-6 space-y-4">
             <div>
-              <label htmlFor="token-input" className="font-mono text-[12px] uppercase text-graphite block mb-1.5">
+              <label htmlFor="token-input" className="font-display text-[12px] uppercase font-semibold text-graphite block mb-1.5">
                 Admin Token
               </label>
               <input
@@ -244,7 +244,7 @@ export function AdminDashboard() {
             </div>
 
             {error && (
-              <div className="p-3 bg-[#A33726]/10 border border-[#A33726]/30 text-[#A33726] text-[13px] rounded font-mono">
+              <div className="p-3 bg-[#A33726]/10 border border-[#A33726]/30 text-[#A33726] text-[13px] rounded font-body">
                 {error}
               </div>
             )}
@@ -258,9 +258,9 @@ export function AdminDashboard() {
             </button>
           </form>
 
-          <div className="mt-6 pt-4 border-t border-rule flex justify-between items-center text-[12px] font-mono text-graphite">
+          <div className="mt-6 pt-4 border-t border-rule flex justify-between items-center text-[12px] font-display text-graphite">
             <a href="/" className="hover:text-ink">
-              ← Return to site
+              Return to site
             </a>
             <span>Protected route</span>
           </div>
@@ -279,7 +279,7 @@ export function AdminDashboard() {
             <div className="flex items-center gap-3">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
               <h1 className="text-[28px] font-display font-medium">Click Telemetry Analytics</h1>
-              <span className="font-mono text-[11px] bg-white border border-rule px-2 py-0.5 rounded text-graphite">
+              <span className="font-display text-[11px] font-medium bg-white border border-rule px-2 py-0.5 rounded text-graphite">
                 90-Day Append Log
               </span>
             </div>
@@ -308,7 +308,7 @@ export function AdminDashboard() {
             <button
               type="button"
               onClick={handleLogout}
-              className="font-mono text-[13px] text-graphite hover:text-[#A33726] px-2 py-1 transition-colors"
+              className="font-display text-[13px] font-medium text-graphite hover:text-[#A33726] px-2 py-1 transition-colors"
             >
               Lock / Exit
             </button>
@@ -318,35 +318,35 @@ export function AdminDashboard() {
         {/* Metric Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="bg-paper border border-rule p-5 rounded-lg">
-            <p className="font-mono text-[11px] uppercase tracking-wider text-graphite">Total Clicks</p>
+            <p className="font-display text-[11px] uppercase tracking-wider font-semibold text-graphite">Total Clicks</p>
             <p className="font-display text-[32px] font-bold text-[#1B3AC7] mt-1">
               {stats.totalClicks}
             </p>
-            <p className="font-mono text-[12px] text-graphite mt-1">Recorded events</p>
+            <p className="font-body text-[12px] text-graphite mt-1">Recorded events</p>
           </div>
 
           <div className="bg-paper border border-rule p-5 rounded-lg">
-            <p className="font-mono text-[11px] uppercase tracking-wider text-graphite">Unique Visitors</p>
+            <p className="font-display text-[11px] uppercase tracking-wider font-semibold text-graphite">Unique Visitors</p>
             <p className="font-display text-[32px] font-bold text-[#1F5C58] mt-1">
               {stats.uniqueVisitors}
             </p>
-            <p className="font-mono text-[12px] text-graphite mt-1">Distinct masked IPs</p>
+            <p className="font-body text-[12px] text-graphite mt-1">Distinct masked IPs</p>
           </div>
 
           <div className="bg-paper border border-rule p-5 rounded-lg">
-            <p className="font-mono text-[11px] uppercase tracking-wider text-graphite">Avg. Time On Page</p>
+            <p className="font-display text-[11px] uppercase tracking-wider font-semibold text-graphite">Avg. Time On Page</p>
             <p className="font-display text-[32px] font-bold text-[#7A5716] mt-1">
               {stats.avgTimeOnPageSec}s
             </p>
-            <p className="font-mono text-[12px] text-graphite mt-1">Before clicking project</p>
+            <p className="font-body text-[12px] text-graphite mt-1">Before clicking project</p>
           </div>
 
           <div className="bg-paper border border-rule p-5 rounded-lg">
-            <p className="font-mono text-[11px] uppercase tracking-wider text-graphite">Avg. Scroll Depth</p>
+            <p className="font-display text-[11px] uppercase tracking-wider font-semibold text-graphite">Avg. Scroll Depth</p>
             <p className="font-display text-[32px] font-bold text-[#A33726] mt-1">
               {stats.avgScrollDepth}%
             </p>
-            <p className="font-mono text-[12px] text-graphite mt-1">Page depth reached</p>
+            <p className="font-body text-[12px] text-graphite mt-1">Page depth reached</p>
           </div>
         </div>
 
@@ -422,7 +422,7 @@ export function AdminDashboard() {
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <h2 className="font-display text-[20px] font-medium">Click Event Ledger</h2>
-              <p className="font-mono text-[12px] text-graphite">
+              <p className="font-body text-[12px] text-graphite">
                 Showing {filteredRecords.length} of {data?.records.length || 0} events
               </p>
             </div>
@@ -466,7 +466,7 @@ export function AdminDashboard() {
           {/* Table */}
           <div className="overflow-x-auto border border-rule rounded">
             <table className="w-full text-left text-[13px]">
-              <thead className="bg-[#ECE7DE] border-b border-rule font-mono text-[11px] uppercase tracking-wider text-graphite">
+              <thead className="bg-[#ECE7DE] border-b border-rule font-display font-semibold text-[11px] uppercase tracking-wider text-graphite">
                 <tr>
                   <th className="p-3">Project Slug</th>
                   <th className="p-3">Timestamp (UTC)</th>

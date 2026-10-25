@@ -69,10 +69,10 @@ export function PathTimeline() {
                   x={n.x}
                   y={above ? n.y - 52 : n.y + 44}
                   textAnchor="middle"
-                  fill="#12151A"
+                  fill="#1D1D1F"
                   fontSize="17"
-                  fontFamily="Bricolage Grotesque, sans-serif"
-                  fontWeight="700"
+                  fontFamily="var(--font-display)"
+                  fontWeight="600"
                 >
                   {s.place}
                 </text>
@@ -82,7 +82,7 @@ export function PathTimeline() {
                   textAnchor="middle"
                   fill="#2A313C"
                   fontSize="13"
-                  fontFamily="IBM Plex Mono, monospace"
+                  fontFamily="var(--font-body)"
                   fontWeight="500"
                 >
                   {s.role}
@@ -93,8 +93,8 @@ export function PathTimeline() {
                   textAnchor="middle"
                   fill="#1B3AC7"
                   fontSize="12"
-                  fontFamily="IBM Plex Mono, monospace"
-                  fontWeight="700"
+                  fontFamily="var(--font-body)"
+                  fontWeight="600"
                 >
                   {s.when}
                 </text>
@@ -108,9 +108,9 @@ export function PathTimeline() {
       <ol className="border border-rule bg-paper rounded-xl p-2 sm:hidden divide-y divide-rule">
         {between.path.map((s) => (
           <li key={s.place} className="p-4">
-            <span className="font-mono text-[12px] font-bold text-signal">{s.when}</span>
+            <span className="font-display text-[12px] font-semibold text-signal">{s.when}</span>
             <p className="mt-1 font-display text-[21px] font-semibold leading-tight text-ink">{s.place}</p>
-            <p className="font-mono text-[13px] text-graphite mt-1">{s.role}</p>
+            <p className="font-body text-[13px] text-graphite mt-1">{s.role}</p>
           </li>
         ))}
       </ol>
@@ -216,8 +216,8 @@ export function Lenses() {
             textAnchor="middle"
             fill="#FFFFFF"
             fontSize="14"
-            fontFamily="IBM Plex Mono, monospace"
-            fontWeight="700"
+            fontFamily="var(--font-display)"
+            fontWeight="600"
           >
             Worth
           </text>
@@ -227,22 +227,22 @@ export function Lenses() {
             textAnchor="middle"
             fill="#FFFFFF"
             fontSize="14"
-            fontFamily="IBM Plex Mono, monospace"
-            fontWeight="700"
+            fontFamily="var(--font-display)"
+            fontWeight="600"
           >
             building
           </text>
 
-          <text x="145" y="105" textAnchor="middle" fill="#A33726" fontSize="16" fontFamily="Bricolage Grotesque, sans-serif" fontWeight="700">
+          <text x="145" y="105" textAnchor="middle" fill="#A33726" fontSize="16" fontFamily="var(--font-display)" fontWeight="600">
             User need
           </text>
-          <text x="382" y="105" textAnchor="middle" fill="#1B3AC7" fontSize="16" fontFamily="Bricolage Grotesque, sans-serif" fontWeight="700">
+          <text x="382" y="105" textAnchor="middle" fill="#1B3AC7" fontSize="16" fontFamily="var(--font-display)" fontWeight="600">
             Business value
           </text>
-          <text x="140" y="420" textAnchor="middle" fill="#1F5C58" fontSize="16" fontFamily="Bricolage Grotesque, sans-serif" fontWeight="700">
+          <text x="140" y="420" textAnchor="middle" fill="#1F5C58" fontSize="16" fontFamily="var(--font-display)" fontWeight="600">
             Feasibility
           </text>
-          <text x="392" y="420" textAnchor="middle" fill="#7A5716" fontSize="16" fontFamily="Bricolage Grotesque, sans-serif" fontWeight="700">
+          <text x="392" y="420" textAnchor="middle" fill="#7A5716" fontSize="16" fontFamily="var(--font-display)" fontWeight="600">
             AI fit
           </text>
         </svg>
@@ -279,7 +279,7 @@ export function SkillOrbit() {
         <div className="flex flex-wrap items-baseline justify-between gap-4">
           <div>
             <h3 className="text-[26px] leading-tight text-ink">{orbit.title}</h3>
-            <p className="mt-2 hidden font-mono text-[12px] text-graphite md:block">{orbit.note}</p>
+            <p className="mt-2 hidden font-body text-[12px] text-graphite md:block">{orbit.note}</p>
           </div>
         </div>
 
@@ -338,7 +338,7 @@ export function SkillOrbit() {
           {orbit.rings.flat().map((sk) => (
             <li
               key={sk}
-              className="rounded-full border border-rule/80 bg-paper/80 px-3.5 py-1.5 font-mono text-[12px] font-medium text-ink shadow-xs"
+              className="rounded-full border border-rule/80 bg-paper/80 px-3.5 py-1.5 font-display text-[12px] font-medium text-ink shadow-xs"
             >
               {sk}
             </li>

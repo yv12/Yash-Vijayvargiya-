@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from "react-route
 import { useEffect } from "react";
 import {
   Opening,
+  LandingDarkSection,
   Between,
   RealProblem,
   Rag,
@@ -9,7 +10,9 @@ import {
   Principles,
   StoryHeader,
 } from "./chapters/Story";
-import { Blinkit, Ocr, Build, Hdfc, Fraud, WorkHeader } from "./chapters/Work";
+import { WorkShowcase } from "./chapters/Work";
+import { TakeawaysPage, TakeawaysSection } from "./chapters/Takeaways";
+import { PhilosophySection } from "./chapters/Philosophy";
 import { Systems, Direction, VisionHeader } from "./chapters/Close";
 import { Navigation } from "./components/Navigation";
 import { Footer } from "./components/Footer";
@@ -17,10 +20,21 @@ import { PrivacyPage } from "./components/PrivacyNotice";
 import { AdminDashboard } from "./components/AdminDashboard";
 
 function ScrollToTop() {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
+    if (hash) {
+      const id = hash.replace("#", "");
+      const timer = setTimeout(() => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 80);
+      return () => clearTimeout(timer);
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [pathname, hash]);
   return null;
 }
 
@@ -29,10 +43,17 @@ function MainLayout() {
   const isAdminRoute = pathname.startsWith("/admin") || pathname.startsWith("/dashboard");
 
   return (
-    <main>
+    <main className="bg-[#F5F5F7] min-h-screen">
       {!isAdminRoute && <Navigation />}
       <Routes>
-        <Route path="/" element={<Opening />} />
+        <Route path="/" element={
+          <>
+            <Opening />
+            <LandingDarkSection />
+            <TakeawaysSection isEmbedded />
+            <PhilosophySection />
+          </>
+        } />
         <Route path="/story" element={
           <>
             <StoryHeader />
@@ -43,16 +64,8 @@ function MainLayout() {
             <Principles />
           </>
         } />
-        <Route path="/work" element={
-          <>
-            <WorkHeader />
-            <Blinkit />
-            <Ocr />
-            <Build />
-            <Hdfc />
-            <Fraud />
-          </>
-        } />
+        <Route path="/work" element={<WorkShowcase />} />
+        <Route path="/takeaways" element={<TakeawaysPage />} />
         <Route path="/vision" element={
           <>
             <VisionHeader />

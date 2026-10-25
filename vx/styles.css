@@ -46,8 +46,8 @@
 @layer components {
   /* small technical labels, used only on data and diagram parts */
   .tag {
-    @apply font-mono text-[11px] leading-none text-graphite;
-    letter-spacing: 0.04em;
+    @apply font-display text-[11px] font-medium leading-none text-graphite;
+    letter-spacing: 0.02em;
   }
 
   .measure {
@@ -68,7 +68,7 @@
   }
 
   .btn {
-    @apply font-mono text-[12px] text-signal border border-signal/40 rounded px-3 py-2 leading-none;
+    @apply font-display text-[12px] font-semibold text-signal border border-signal/40 rounded px-3 py-2 leading-none;
     background: transparent;
     transition: background-color 150ms ease, border-color 150ms ease;
   }
@@ -167,7 +167,8 @@
   border-radius: 9999px;
   background: theme("colors.orb.rust");
   color: #F5F5F0;
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--font-display);
+  font-weight: 600;
   font-size: 15px;
 }
 
@@ -196,8 +197,9 @@
   text-align: center;
   line-height: 1.15;
   padding: 0 8px;
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--font-display);
   font-size: 11px;
+  font-weight: 500;
   letter-spacing: -0.01em;
   animation: orbit-counter var(--dur, 90s) linear infinite;
   transition: transform 200ms ease;

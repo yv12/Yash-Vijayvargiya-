@@ -5,20 +5,20 @@ export function PrivacyContent() {
         <h2 className="text-[26px] font-display font-medium text-ink">
           Privacy Notice
         </h2>
-        <p className="font-mono text-[12px] text-graphite mt-1">
+        <p className="font-body text-[12px] text-graphite mt-1">
           Last updated: September 2026 · Plain language, no jargon
         </p>
       </div>
 
       <div className="space-y-4 text-[15px] leading-relaxed text-ink/90">
         <section>
-          <h3 className="font-mono text-[13px] font-bold uppercase tracking-wider text-graphite">
+          <h3 className="font-display text-[13px] font-semibold uppercase tracking-wider text-graphite">
             1. What is collected when you click a project
           </h3>
           <p className="mt-1.5">
             When you click &ldquo;View live&rdquo; or launch a project demo, the following minimal signals are logged:
           </p>
-          <ul className="mt-2 list-disc list-inside space-y-1 text-graphite font-mono text-[13px]">
+          <ul className="mt-2 list-disc list-inside space-y-1 text-graphite font-body text-[14px]">
             <li><strong>Project slug:</strong> Which case study or project link was clicked</li>
             <li><strong>Timestamp:</strong> Date and time of the click</li>
             <li><strong>Device &amp; Browser:</strong> Standard user-agent header (e.g. Chrome on macOS, Safari on iOS)</li>
@@ -27,13 +27,13 @@ export function PrivacyContent() {
             <li><strong>Viewport:</strong> Screen dimensions (to distinguish desktop vs mobile layouts)</li>
             <li>
               <strong>Masked IP address:</strong> The last octet of your IP is permanently zeroed out/masked (e.g.&nbsp;
-              <code className="bg-paper-dark/30 px-1 py-0.5 rounded text-ink">203.0.113.xxx</code>) before writing to disk. Full IP addresses are never saved.
+              <code className="bg-paper-dark/30 px-1 py-0.5 rounded text-ink font-mono">203.0.113.xxx</code>) before writing to disk. Full IP addresses are never saved.
             </li>
           </ul>
         </section>
 
         <section>
-          <h3 className="font-mono text-[13px] font-bold uppercase tracking-wider text-graphite">
+          <h3 className="font-display text-[13px] font-semibold uppercase tracking-wider text-graphite">
             2. Why this is collected
           </h3>
           <p className="mt-1.5 text-graphite">
@@ -42,7 +42,7 @@ export function PrivacyContent() {
         </section>
 
         <section>
-          <h3 className="font-mono text-[13px] font-bold uppercase tracking-wider text-graphite">
+          <h3 className="font-display text-[13px] font-semibold uppercase tracking-wider text-graphite">
             3. What is NOT collected
           </h3>
           <p className="mt-1.5 text-graphite">
@@ -51,7 +51,7 @@ export function PrivacyContent() {
         </section>
 
         <section>
-          <h3 className="font-mono text-[13px] font-bold uppercase tracking-wider text-graphite">
+          <h3 className="font-display text-[13px] font-semibold uppercase tracking-wider text-graphite">
             4. Data Retention &amp; Storage
           </h3>
           <p className="mt-1.5 text-graphite">
@@ -60,14 +60,14 @@ export function PrivacyContent() {
         </section>
 
         <section>
-          <h3 className="font-mono text-[13px] font-bold uppercase tracking-wider text-graphite">
+          <h3 className="font-display text-[13px] font-semibold uppercase tracking-wider text-graphite">
             5. Deletion &amp; Questions
           </h3>
           <p className="mt-1.5 text-graphite">
             For any questions or deletion requests, email{" "}
             <a
               href="mailto:yashvijay12@hotmail.com"
-              className="text-[#1B3AC7] underline underline-offset-2 hover:text-ink font-mono font-medium"
+              className="text-[#1B3AC7] underline underline-offset-2 hover:text-ink font-display font-medium"
             >
               yashvijay12@hotmail.com
             </a>
@@ -104,7 +104,7 @@ export function PrivacyModal({
           type="button"
           onClick={onClose}
           aria-label="Close privacy notice"
-          className="absolute top-4 right-4 text-graphite hover:text-ink font-mono text-[18px] p-2"
+          className="absolute top-4 right-4 text-graphite hover:text-ink font-display text-[18px] p-2"
         >
           ✕
         </button>
@@ -129,9 +129,9 @@ export function PrivacyPage() {
       <div className="max-w-2xl mx-auto bg-paper border border-rule p-8 sm:p-12 shadow-sm rounded-lg">
         <a
           href="/"
-          className="inline-block font-mono text-[13px] text-[#1B3AC7] hover:underline mb-8"
+          className="inline-block font-display font-medium text-[13px] text-[#1B3AC7] hover:underline mb-8"
         >
-          ← Back to home
+          Back to home
         </a>
         <PrivacyContent />
       </div>

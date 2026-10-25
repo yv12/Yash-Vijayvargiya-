@@ -70,7 +70,7 @@ export function SectionHeader({
       className="section-header-band"
       style={{ borderColor: accent, "--sh-accent": accent } as React.CSSProperties}
     >
-      <div className="mx-auto max-w-page px-4 sm:px-10 lg:px-16 py-2.5 sm:py-3.5 flex items-center justify-between gap-3 sm:gap-4 flex-wrap">
+      <div className="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12 py-2.5 sm:py-3 flex items-center justify-between gap-3 sm:gap-4 flex-wrap">
         <div className="flex items-center gap-2.5 sm:gap-3.5 pl-20 sm:pl-28 md:pl-32">
           <span
             className="section-header-dot"
@@ -89,7 +89,7 @@ export function SectionHeader({
 }
 
 /**
- * Aesthetic 90s Tactile Hardware Button — authentic beveled keycap,
+ * Aesthetic 90s Tactile Hardware Button: authentic beveled keycap,
  * glowing phosphor status jewel LED lamp, mechanical press depth, and crisp monospace typography.
  * Attracts attention through tactile realism without being oversized.
  */
@@ -137,25 +137,6 @@ export function LaunchLink({
 
       {/* Button label */}
       <span className="retro-btn-text">{children}</span>
-
-      {/* 90s Mechanical action arrow */}
-      <span className="retro-btn-arrow" aria-hidden="true">
-        <svg
-          width="12"
-          height="12"
-          viewBox="0 0 12 12"
-          fill="none"
-          className="retro-arrow-icon"
-        >
-          <path
-            d="M2.5 9.5L9.5 2.5M9.5 2.5H4.5M9.5 2.5V7.5"
-            stroke="currentColor"
-            strokeWidth="1.75"
-            strokeLinecap="square"
-            strokeLinejoin="miter"
-          />
-        </svg>
-      </span>
     </a>
   );
 }
@@ -184,15 +165,15 @@ export function Chapter({
       className={`scroll-mt-12 sm:scroll-mt-16 ${tone.bg} ${variantClass} relative overflow-hidden`}
       style={{ ["--accent" as string]: tone.accent }}
     >
-      <div className="relative z-10 mx-auto max-w-page px-4 py-14 sm:px-10 md:py-28 lg:px-16 flex flex-col items-center text-center">
+      <div className="relative z-10 mx-auto max-w-6xl px-4 py-10 sm:py-12 md:py-14 sm:px-8 lg:px-12 flex flex-col items-center text-center">
 
         <h2
           id={`${id}-title`}
-          className="measure text-[26px] xs:text-[32px] sm:text-[40px] md:text-[48px] leading-[1.08] px-2"
+          className="measure text-[22px] xs:text-[26px] sm:text-[28px] md:text-[32px] leading-[1.18] px-2"
         >
           {title}
         </h2>
-        <div className="mt-6 sm:mt-8 md:mt-10 flex flex-col items-center w-full">{children}</div>
+        <div className="mt-5 sm:mt-6 md:mt-8 flex flex-col items-center w-full">{children}</div>
       </div>
     </section>
   );
@@ -200,7 +181,7 @@ export function Chapter({
 
 export function P({ children }: { children: ReactNode }) {
   return (
-    <p className="measure mt-5 sm:mt-6 first:mt-0 text-[17px] sm:text-[20px] leading-[1.72] text-[#16191E] text-center mx-auto px-1 sm:px-0">
+    <p className="measure mt-4 sm:mt-4.5 first:mt-0 text-[14px] sm:text-[15px] md:text-[16px] leading-[1.65] text-[#16191E] text-center mx-auto px-1 sm:px-0">
       {children}
     </p>
   );
@@ -209,7 +190,7 @@ export function P({ children }: { children: ReactNode }) {
 export function Note({ children }: { children: ReactNode }) {
   return (
     <p
-      className="measure mt-6 sm:mt-7 border-l-4 border-r-4 px-4 sm:px-6 py-3.5 sm:py-4 text-[16px] sm:text-[19px] leading-relaxed italic text-[#343B45] bg-paper/60 text-center mx-auto"
+      className="measure mt-4 sm:mt-5 border-l-4 border-r-4 px-4 sm:px-5 py-2.5 sm:py-3 text-[13px] sm:text-[14px] leading-relaxed italic text-[#343B45] bg-paper/60 text-center mx-auto"
       style={{ borderColor: "var(--accent)" }}
     >
       {children}
@@ -219,7 +200,7 @@ export function Note({ children }: { children: ReactNode }) {
 
 /* --------------------------------------------------------- pull quote */
 
-/** Editorial pull-quote — a visually distinct highlighted line from the chapter with optional scroll parallax. */
+/** Editorial pull-quote: a visually distinct highlighted line from the chapter with optional scroll parallax. */
 export function PullQuote({
   children,
   accent = "var(--accent)",

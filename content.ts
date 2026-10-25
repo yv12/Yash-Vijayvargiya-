@@ -49,7 +49,7 @@ export const contact = {
   email: "", // TODO(yash): public email address
   linkedin: "https://linkedin.com/in/yv12",
   github: "", // TODO(yash): GitHub profile URL
-  resumeUrl: "", // TODO(yash): hosted resume PDF
+  resumeUrl: "https://drive.google.com/file/d/1TKhl1kR3h-OcTaY4xYclH65ij-VAWY-X/view?usp=sharing",
   closing:
     "If any of this overlaps with something you are building, I would like to hear about it. I am most useful early, when the problem is still being argued about.",
 };

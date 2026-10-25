@@ -1,10 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Chapter, Draw, Note, P, PullQuote, SectionHeader } from "../ui";
 import { Lenses, PathTimeline, PinnedCards } from "../visuals";
 import {
   between,
   chapters,
-  meta,
   principles,
   problem,
   questions,
@@ -12,117 +11,37 @@ import {
   speed,
 } from "../content";
 import { PhysicsButtons } from "../components/PhysicsButtons";
-import { Link } from "react-router-dom";
 import { useScrollProgress } from "../hooks/useScrollMotion";
+import { CASE_STUDIES, type CaseStudyProject } from "../data/caseStudies";
+import { CaseStudyCarousel } from "../components/case-studies/CaseStudyCarousel";
+import { CaseStudyModal } from "../components/case-studies/CaseStudyModal";
 
 const ch = (id: string) => chapters.find((c) => c.id === id)!;
 
 /* ------------------------------------------------------------------ opening */
 
 function HeroBackground() {
-  const marqueeContent = [...meta.keywords, ...meta.keywords, ...meta.keywords];
-
   return (
-    <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none bg-clay flex flex-col justify-center">
-      {/* Subtle Data Grid overlay for the 'analyst' feel */}
+    <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none bg-[#F5F5F7]">
+      {/* Top soft ambient light highlight */}
       <div 
-        className="absolute inset-0 opacity-[0.12] z-0" 
-        style={{
-          backgroundImage: `linear-gradient(rgba(18, 21, 26, 0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(18, 21, 26, 0.4) 1px, transparent 1px)`,
-          backgroundSize: '40px 40px'
-        }}
+        aria-hidden="true"
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-[1100px] h-[520px] bg-gradient-to-b from-white/95 via-white/50 to-transparent blur-2xl pointer-events-none" 
       />
 
-      {/* Marquee Background */}
-      <div className="absolute inset-0 z-10 flex flex-col justify-center gap-8 sm:gap-12 md:gap-16 opacity-75 sm:opacity-80 origin-center -rotate-3 scale-[1.08] sm:scale-[1.15]">
-        {/* Track 1 - Yellow */}
-        <div className="flex animate-marquee whitespace-nowrap items-center w-max bg-[#FACC15] py-2.5 sm:py-3.5 md:py-4 shadow-lg border-y border-black/10">
-          {marqueeContent.map((word, i) => (
-             <div key={`t1-${word}-${i}`} className="flex items-center gap-4 sm:gap-6 mx-2 sm:mx-3">
-                <span className="text-black text-[13px] sm:text-[15px] md:text-[17px] font-mono font-bold tracking-tight uppercase">
-                  {word}
-                </span>
-                <span aria-hidden="true" className="text-black/40 text-[13px] sm:text-[16px]">→</span>
-             </div>
-          ))}
-        </div>
-        
-        {/* Track 2 - Fluorescent Green (Reverse) */}
-        <div className="flex animate-marquee-reverse whitespace-nowrap items-center w-max bg-[#39FF14] py-2.5 sm:py-3.5 md:py-4 shadow-lg border-y border-black/10" style={{ marginLeft: '-30%' }}>
-          {marqueeContent.map((word, i) => (
-             <div key={`t2-${word}-${i}`} className="flex items-center gap-4 sm:gap-6 mx-2 sm:mx-3">
-                <span className="text-black text-[13px] sm:text-[15px] md:text-[17px] font-mono font-bold tracking-tight uppercase">
-                  {word}
-                </span>
-                <span aria-hidden="true" className="text-black/40 text-[13px] sm:text-[16px]">→</span>
-             </div>
-          ))}
-        </div>
-        
-        {/* Track 3 - Orange */}
-        <div className="flex animate-marquee whitespace-nowrap items-center w-max bg-[#F97316] py-2.5 sm:py-3.5 md:py-4 shadow-lg border-y border-black/10" style={{ marginLeft: '-15%' }}>
-          {marqueeContent.map((word, i) => (
-             <div key={`t3-${word}-${i}`} className="flex items-center gap-4 sm:gap-6 mx-2 sm:mx-3">
-                <span className="text-black text-[13px] sm:text-[15px] md:text-[17px] font-mono font-bold tracking-tight uppercase">
-                  {word}
-                </span>
-                <span aria-hidden="true" className="text-black/40 text-[13px] sm:text-[16px]">→</span>
-             </div>
-          ))}
-        </div>
-      </div>
-      
-      {/* Edge fades to blend nicely */}
-      <div className="absolute inset-y-0 left-0 w-16 sm:w-32 bg-gradient-to-r from-clay to-transparent pointer-events-none z-20" />
-      <div className="absolute inset-y-0 right-0 w-16 sm:w-32 bg-gradient-to-l from-clay to-transparent pointer-events-none z-20" />
-      <div className="absolute inset-x-0 top-0 h-16 sm:h-32 bg-gradient-to-b from-clay to-transparent pointer-events-none z-20" />
-      <div className="absolute inset-x-0 bottom-0 h-16 sm:h-32 bg-gradient-to-t from-clay to-transparent pointer-events-none z-20" />
+      {/* Subtle Apple ambient color tints for depth */}
+      <div 
+        aria-hidden="true"
+        className="absolute top-1/4 left-1/4 w-[540px] h-[540px] bg-[#0071E3]/[0.02] rounded-full blur-3xl pointer-events-none" 
+      />
+      <div 
+        aria-hidden="true"
+        className="absolute top-1/3 right-1/4 w-[480px] h-[480px] bg-[#FF6B55]/[0.02] rounded-full blur-3xl pointer-events-none" 
+      />
     </div>
   );
 }
 
-/**
- * Live handwriting animation in cursive font that writes out once when the website opens.
- */
-function LiveCursiveRole({ text }: { text: string }) {
-  const [displayedText, setDisplayedText] = useState("");
-  const [isTyping, setIsTyping] = useState(true);
-
-  useEffect(() => {
-    let index = 0;
-    // Brief initial pause so the visitor sees the pen begin writing
-    const startDelay = setTimeout(() => {
-      const interval = setInterval(() => {
-        index++;
-        if (index <= text.length) {
-          setDisplayedText(text.slice(0, index));
-        } else {
-          setIsTyping(false);
-          clearInterval(interval);
-        }
-      }, 32); // Fluid handwriting pace
-
-      return () => clearInterval(interval);
-    }, 280);
-
-    return () => clearTimeout(startDelay);
-  }, [text]);
-
-  return (
-    <div
-      aria-label={text}
-      className="measure mt-3 sm:mt-5 text-[22px] sm:text-[32px] md:text-[40px] text-[#A33726] font-cursive font-semibold leading-[1.25] max-w-[62ch] min-h-[3.6em] sm:min-h-[2.8em] flex items-center justify-center flex-wrap px-2"
-    >
-      <span>{displayedText}</span>
-      {isTyping && (
-        <span
-          className="inline-block w-[3px] h-[1.05em] bg-[#A33726] ml-1.5 align-middle animate-pulse rounded-full shadow-sm"
-          aria-hidden="true"
-        />
-      )}
-    </div>
-  );
-}
 
 export function Opening() {
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -131,92 +50,162 @@ export function Opening() {
     <section
       id="opening"
       aria-labelledby="opening-title"
-      className="relative flex min-h-[100svh] flex-col justify-center bg-clay px-4 pb-16 pt-20 sm:px-10 sm:pb-20 sm:pt-28 lg:px-16 text-center overflow-hidden"
+      className="relative flex min-h-[100svh] h-[100svh] flex-col justify-center items-center bg-[#F5F5F7] px-4 py-12 sm:py-16 pt-20 sm:pt-24 lg:px-8 text-center overflow-hidden"
     >
       <HeroBackground />
 
+      {/* Hand-Drawn "Sketch It Out" Framework: Positioned cleanly in bottom-left */}
+      <div 
+        aria-hidden="true"
+        className="absolute left-6 sm:left-12 md:left-16 lg:left-20 bottom-5 sm:bottom-7 lg:bottom-9 z-20 pointer-events-none select-none w-[160px] sm:w-[210px] md:w-[260px] lg:w-[290px] max-w-[42vw] sm:max-w-[24vw]"
+      >
+        <img
+          src="/sketch-framework.png"
+          alt="The Sketch It Out Framework: Hand-drawn problem solving sketch"
+          style={{ transform: "rotate(-23deg)", transformOrigin: "bottom left" }}
+          className="w-full max-h-[20vh] sm:max-h-[24vh] lg:max-h-[28vh] h-auto object-contain object-bottom object-left opacity-85 sm:opacity-90 drop-shadow-sm transition-transform"
+          loading="eager"
+        />
+      </div>
+
       <PhysicsButtons titleRef={titleRef} />
 
-      <div className="relative z-20 mx-auto w-full max-w-page flex flex-col items-center">
+      <div className="relative z-20 mx-auto w-full max-w-7xl flex flex-col items-center">
         <h1
           id="opening-title"
           ref={titleRef}
-          className="text-[36px] sm:text-[60px] md:text-[80px] lg:text-[84px] font-display font-medium tracking-tight text-ink leading-[1.02] sm:leading-[0.98]"
+          className="flex flex-col items-center gap-1.5 sm:gap-3 md:gap-4 text-[clamp(32px,6.8vw,72px)] font-display font-bold tracking-[-0.035em] leading-[1.15] sm:leading-[1.2] pb-2 sm:pb-3 pt-1 px-2 max-w-5xl"
         >
-          {meta.name}
+          <span
+            className="block"
+            style={{
+              backgroundImage: "linear-gradient(135deg, #B45309 0%, #D97706 40%, #EA580C 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+            }}
+          >
+            Designing products at the
+          </span>
+          <span className="block">
+            <span
+              style={{
+                backgroundImage: "linear-gradient(135deg, #881337 0%, #991B1B 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                WebkitTextStroke: "0.5px rgba(81, 4, 0, 0.45)",
+              }}
+              className="font-extrabold"
+            >
+              intersection
+            </span>
+            <span
+              style={{
+                backgroundImage: "linear-gradient(135deg, #C2410C 0%, #DC2626 45%, #7C3AED 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
+              {" "}of
+            </span>
+          </span>
+          <span
+            className="block"
+            style={{
+              backgroundImage: "linear-gradient(135deg, #C2410C 0%, #DC2626 45%, #7C3AED 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+            }}
+          >
+            business, tech &amp; AI.
+          </span>
         </h1>
-        <LiveCursiveRole text={meta.role} />
-
-        {/* Navigation cards — distinctly styled per section */}
-        <div className="relative z-20 mt-10 sm:mt-16 md:mt-20 flex flex-col md:flex-row gap-4 sm:gap-5 items-stretch justify-center w-full max-w-5xl mx-auto px-2 sm:px-4 text-left">
-          {/* My Story */}
-          <Link
-            to="/story"
-            id="nav-story"
-            className="flex flex-col w-full md:w-1/3 group relative overflow-hidden bg-paper border-2 border-[#A33726]/30 p-5 sm:p-7 md:p-8 rounded-xl sm:rounded-2xl shadow-sm hover:shadow-2xl transition-all hover:-translate-y-1"
-          >
-            <div className="absolute inset-0 bg-gradient-to-br from-[#A33726]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-            {/* Icon glyph */}
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#A33726]/10 border border-[#A33726]/20 flex items-center justify-center mb-3 sm:mb-4 flex-shrink-0">
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-                <path d="M3 4h12M3 8h8M3 12h10" stroke="#A33726" strokeWidth="1.5" strokeLinecap="round"/>
-              </svg>
-            </div>
-            <span className="font-mono text-[10px] font-bold tracking-widest text-[#A33726] uppercase mb-1">My Story</span>
-            <h2 className="text-[18px] sm:text-[20px] font-display font-medium text-ink mb-2 leading-snug">The analyst between two rooms</h2>
-            <p className="text-graphite font-body text-[13px] sm:text-[14px] leading-relaxed flex-1">Background, turning points, and the three principles I apply before anything gets built.</p>
-            <div className="mt-5 sm:mt-6 flex items-center justify-between">
-              <span className="font-mono text-[10px] sm:text-[11px] text-graphite">5 chapters · ~6 min</span>
-              <span className="font-mono text-[12px] sm:text-[13px] font-bold text-[#A33726] group-hover:translate-x-1 transition-transform inline-block">Read →</span>
-            </div>
-          </Link>
-
-          {/* Case Studies */}
-          <Link
-            to="/work"
-            id="nav-work"
-            className="flex flex-col w-full md:w-1/3 group relative overflow-hidden bg-paper border-2 border-[#1B3AC7]/30 p-5 sm:p-7 md:p-8 rounded-xl sm:rounded-2xl shadow-sm hover:shadow-2xl transition-all hover:-translate-y-1"
-          >
-            <div className="absolute inset-0 bg-gradient-to-br from-[#1B3AC7]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#1B3AC7]/10 border border-[#1B3AC7]/20 flex items-center justify-center mb-3 sm:mb-4 flex-shrink-0">
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-                <rect x="2" y="5" width="5" height="10" rx="1" stroke="#1B3AC7" strokeWidth="1.5"/>
-                <rect x="9" y="2" width="5" height="13" rx="1" stroke="#1B3AC7" strokeWidth="1.5"/>
-              </svg>
-            </div>
-            <span className="font-mono text-[10px] font-bold tracking-widest text-[#1B3AC7] uppercase mb-1">Case Studies</span>
-            <h2 className="text-[18px] sm:text-[20px] font-display font-medium text-ink mb-2 leading-snug">Evidence over instinct</h2>
-            <p className="text-graphite font-body text-[13px] sm:text-[14px] leading-relaxed flex-1">Blinkit, OCR, HDFC, Fraud detection — each with the hypothesis, the evidence, and what changed because of it.</p>
-            <div className="mt-5 sm:mt-6 flex items-center justify-between">
-              <span className="font-mono text-[10px] sm:text-[11px] text-graphite">5 case studies · live demos</span>
-              <span className="font-mono text-[12px] sm:text-[13px] font-bold text-[#1B3AC7] group-hover:translate-x-1 transition-transform inline-block">View →</span>
-            </div>
-          </Link>
-
-          {/* Vision */}
-          <Link
-            to="/vision"
-            id="nav-vision"
-            className="flex flex-col w-full md:w-1/3 group relative overflow-hidden bg-paper border-2 border-[#1F5C58]/30 p-5 sm:p-7 md:p-8 rounded-xl sm:rounded-2xl shadow-sm hover:shadow-2xl transition-all hover:-translate-y-1"
-          >
-            <div className="absolute inset-0 bg-gradient-to-br from-[#1F5C58]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#1F5C58]/10 border border-[#1F5C58]/20 flex items-center justify-center mb-3 sm:mb-4 flex-shrink-0">
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-                <circle cx="9" cy="9" r="3" stroke="#1F5C58" strokeWidth="1.5"/>
-                <path d="M9 2v2M9 14v2M2 9h2M14 9h2" stroke="#1F5C58" strokeWidth="1.5" strokeLinecap="round"/>
-                <path d="M4.2 4.2l1.4 1.4M12.4 12.4l1.4 1.4M12.4 5.6l-1.4 1.4M5.6 12.4l-1.4 1.4" stroke="#1F5C58" strokeWidth="1" strokeLinecap="round"/>
-              </svg>
-            </div>
-            <span className="font-mono text-[10px] font-bold tracking-widest text-[#1F5C58] uppercase mb-1">Vision</span>
-            <h2 className="text-[18px] sm:text-[20px] font-display font-medium text-ink mb-2 leading-snug">What I want to own next</h2>
-            <p className="text-graphite font-body text-[13px] sm:text-[14px] leading-relaxed flex-1">The systems, directions, and skills orbiting the next phase — from card payment flows to owning a product end to end.</p>
-            <div className="mt-5 sm:mt-6 flex items-center justify-between">
-              <span className="font-mono text-[10px] sm:text-[11px] text-graphite">Systems + direction</span>
-              <span className="font-mono text-[12px] sm:text-[13px] font-bold text-[#1F5C58] group-hover:translate-x-1 transition-transform inline-block">Explore →</span>
-            </div>
-          </Link>
-        </div>
       </div>
+
+      {/* Scroll indicator cue to seamlessly transition down into Case Studies */}
+      <a
+        href="#case-studies"
+        aria-label="Scroll to Case Studies"
+        className="absolute bottom-5 sm:bottom-6 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-1.5 text-[#86868B] hover:text-[#1D1D1F] transition-colors group cursor-pointer select-none"
+      >
+        <span className="text-[10px] sm:text-[11px] font-display font-medium tracking-widest uppercase opacity-75 group-hover:opacity-100 transition-opacity">
+          Case Studies
+        </span>
+        <svg 
+          width="15" 
+          height="15" 
+          viewBox="0 0 24 24" 
+          fill="none" 
+          stroke="currentColor" 
+          strokeWidth="2.2" 
+          strokeLinecap="round" 
+          strokeLinejoin="round"
+          className="animate-bounce"
+        >
+          <path d="M7 13l5 5 5-5M7 6l5 5 5-5"/>
+        </svg>
+      </a>
+    </section>
+  );
+}
+
+/**
+ * Dark section directly below the Hero on the landing page.
+ * Pure Apple Pro black (#000000) canvas with AI products headline and case study carousel.
+ */
+export function LandingDarkSection() {
+  const [activeProject, setActiveProject] = useState<CaseStudyProject | null>(null);
+
+  const handleOpenDossier = (project: CaseStudyProject) => {
+    setActiveProject(project);
+  };
+
+  const handleCloseDossier = () => {
+    setActiveProject(null);
+  };
+
+  return (
+    <section
+      id="case-studies"
+      aria-label="Case Studies and Architecture"
+      className="relative flex w-full flex-col justify-center items-center bg-[#000000] text-white px-3 sm:px-6 lg:px-8 py-12 sm:py-16 text-center overflow-hidden border-t border-white/10"
+    >
+      {/* Top subtle ambient spotlight glow */}
+      <div 
+        aria-hidden="true"
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[450px] bg-gradient-to-b from-white/[0.08] via-white/[0.02] to-transparent blur-3xl pointer-events-none" 
+      />
+
+      <div className="relative z-10 mx-auto w-full max-w-7xl flex flex-col items-center">
+        {/* User-requested headline */}
+        <h2 className="text-[clamp(24px,3.2vw,36px)] font-display font-semibold tracking-[-0.03em] text-[#F5F5F7] leading-[1.18] max-w-3xl px-2">
+          AI products
+        </h2>
+
+        {/* Subtitle description */}
+        <p className="mt-2.5 sm:mt-3 text-[#86868B] font-body text-[14px] sm:text-[15px] max-w-xl px-4 leading-relaxed">
+          From enterprise-scale retrieval to multi-agent automation: real problems, engineered architectures, and measurable commercial value.
+        </p>
+
+        {/* Carousel Container (Replacing dashed placeholder) */}
+        <div className="mt-5 sm:mt-6 w-full h-[460px] sm:h-[490px] md:h-[520px] flex flex-col justify-center items-center relative">
+          <CaseStudyCarousel
+            projects={CASE_STUDIES}
+            onOpenDossier={handleOpenDossier}
+            theme="dark"
+          />
+        </div>
+
+      </div>
+
+      {/* Case Study Dossier Modal */}
+      {activeProject && (
+        <CaseStudyModal
+          project={activeProject}
+          allProjects={CASE_STUDIES}
+          onClose={handleCloseDossier}
+          onSelectProject={setActiveProject}
+        />
+      )}
     </section>
   );
 }
@@ -334,28 +323,28 @@ export function Between() {
           />
 
           {/* Left Arrow & Label */}
-          <polygon points="40,160 52,154 52,166" fill="#12151A" />
+          <polygon points="40,160 52,154 52,166" fill="#1D1D1F" />
           <text
             x="40"
             y="194"
-            fill="#12151A"
+            fill="#1D1D1F"
             fontSize="14"
-            fontFamily="IBM Plex Mono, monospace"
-            fontWeight="700"
+            fontFamily="var(--font-display)"
+            fontWeight="600"
           >
             ← {between.axis.left}
           </text>
 
           {/* Right Arrow & Label */}
-          <polygon points="680,160 668,154 668,166" fill="#12151A" />
+          <polygon points="680,160 668,154 668,166" fill="#1D1D1F" />
           <text
             x="680"
             y="194"
             textAnchor="end"
-            fill="#12151A"
+            fill="#1D1D1F"
             fontSize="14"
-            fontFamily="IBM Plex Mono, monospace"
-            fontWeight="700"
+            fontFamily="var(--font-display)"
+            fontWeight="600"
           >
             {between.axis.right} →
           </text>
@@ -373,8 +362,8 @@ export function Between() {
               y="22"
               fill="#1B3AC7"
               fontSize="13"
-              fontFamily="IBM Plex Mono, monospace"
-              fontWeight="700"
+              fontFamily="var(--font-display)"
+              fontWeight="600"
             >
               ● {between.axis.marker}
             </text>
@@ -461,7 +450,7 @@ export function Rag() {
       <ol className="mt-10 flex flex-wrap items-center gap-x-3 gap-y-3">
         {rag.order.map((step, i) => (
           <li key={step} className="flex items-center gap-3">
-            <span className="border border-rule bg-paper px-3 py-2 font-mono text-[12px]">
+            <span className="border border-rule bg-paper px-3 py-2 font-display text-[12px] font-medium">
               {step}
             </span>
             {i < rag.order.length - 1 && (
