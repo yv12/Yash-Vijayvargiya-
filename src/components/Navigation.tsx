@@ -73,21 +73,25 @@ export function Navigation() {
         <Link
           to="/"
           onClick={handleScrollToTop}
-          className="group flex items-center gap-2 font-display font-semibold text-[15px] sm:text-[17px] text-[#1D1D1F] tracking-tight hover:opacity-80 transition-opacity"
+          className={`group flex items-center gap-2 font-display font-semibold text-[15px] sm:text-[17px] tracking-tight hover:opacity-80 transition-all ${
+            isTransparent ? "text-white" : "text-[#1D1D1F]"
+          }`}
           aria-label="Yash Vijayvargiya Home"
         >
           <span>Yash Vijayvargiya</span>
         </Link>
 
         {/* Top Right: Menus */}
-        <nav className="flex items-center gap-2 sm:gap-4 font-display text-[13px] sm:text-[14px] font-medium text-[#1D1D1F]">
+        <nav className={`flex items-center gap-2 sm:gap-4 font-display text-[13px] sm:text-[14px] font-medium ${
+          isTransparent ? "text-white" : "text-[#1D1D1F]"
+        }`}>
           <Link
             to="/#case-studies"
             onClick={(e) => handleScrollTo(e, "case-studies")}
-            className={`hover:text-[#0071E3] transition-colors px-2 py-1 ${
+            className={`transition-colors px-2 py-1 ${
               (isHome && activeSection === "case-studies") || location.pathname === "/work"
-                ? "text-[#0071E3] font-semibold"
-                : "text-[#1D1D1F]"
+                ? isTransparent ? "text-amber-300 font-semibold" : "text-[#0071E3] font-semibold"
+                : isTransparent ? "text-white/80 hover:text-white" : "text-[#1D1D1F] hover:text-[#0071E3]"
             }`}
           >
             Case Studies
@@ -96,10 +100,10 @@ export function Navigation() {
           <Link
             to="/#takeaways"
             onClick={(e) => handleScrollTo(e, "takeaways")}
-            className={`hover:text-[#0071E3] transition-colors px-2 py-1 ${
+            className={`transition-colors px-2 py-1 ${
               (isHome && activeSection === "takeaways") || location.pathname === "/takeaways"
-                ? "text-[#0071E3] font-semibold"
-                : "text-[#1D1D1F]"
+                ? isTransparent ? "text-amber-300 font-semibold" : "text-[#0071E3] font-semibold"
+                : isTransparent ? "text-white/80 hover:text-white" : "text-[#1D1D1F] hover:text-[#0071E3]"
             }`}
           >
             Takeaways
@@ -111,7 +115,11 @@ export function Navigation() {
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => trackButtonClick("interview-me-whatsapp")}
-            className="flex items-center gap-1.5 border border-[#0071E3]/35 bg-[#0071E3]/[0.08] hover:bg-[#0071E3]/[0.15] text-[#0071E3] px-3.5 py-1.5 rounded-full text-[12px] sm:text-[13px] font-semibold transition-all shadow-sm hover:shadow"
+            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[12px] sm:text-[13px] font-semibold transition-all shadow-sm hover:shadow ${
+              isTransparent
+                ? "border border-white/25 bg-white/10 hover:bg-white/20 text-white"
+                : "border border-[#0071E3]/35 bg-[#0071E3]/[0.08] hover:bg-[#0071E3]/[0.15] text-[#0071E3]"
+            }`}
             title="Chat directly on WhatsApp"
           >
             <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">

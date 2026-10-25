@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Chapter, Draw, Note, P, PullQuote, SectionHeader } from "../ui";
 import { Lenses, PathTimeline, PinnedCards } from "../visuals";
 import {
@@ -21,27 +21,66 @@ const ch = (id: string) => chapters.find((c) => c.id === id)!;
 /* ------------------------------------------------------------------ opening */
 
 function HeroBackground() {
-  return (
-    <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none bg-[#F5F5F7]">
-      {/* Top soft ambient light highlight */}
-      <div 
-        aria-hidden="true"
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-[1100px] h-[520px] bg-gradient-to-b from-white/95 via-white/50 to-transparent blur-2xl pointer-events-none" 
-      />
+  const vantaRef = useRef<HTMLDivElement>(null);
+  const effectRef = useRef<any>(null);
 
-      {/* Subtle Apple ambient color tints for depth */}
-      <div 
-        aria-hidden="true"
-        className="absolute top-1/4 left-1/4 w-[540px] h-[540px] bg-[#0071E3]/[0.02] rounded-full blur-3xl pointer-events-none" 
-      />
-      <div 
-        aria-hidden="true"
-        className="absolute top-1/3 right-1/4 w-[480px] h-[480px] bg-[#FF6B55]/[0.02] rounded-full blur-3xl pointer-events-none" 
-      />
-    </div>
+  useEffect(() => {
+    let timer: any = null;
+
+    const initVanta = () => {
+      if (effectRef.current) return;
+      const vanta = (window as any).VANTA;
+      if (vanta && vanta.HALO && vantaRef.current) {
+        try {
+          effectRef.current = vanta.HALO({
+            el: vantaRef.current,
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.0,
+            minWidth: 200.0,
+            baseColor: 0x0,
+            backgroundColor: 0x431913,
+            amplitudeFactor: 2.7,
+            xOffset: -0.02,
+            yOffset: -0.07,
+            size: 2.8,
+          });
+        } catch (err) {
+          console.error("Error initializing Vanta.HALO:", err);
+        }
+      }
+    };
+
+    if ((window as any).VANTA?.HALO) {
+      initVanta();
+    } else {
+      timer = setInterval(() => {
+        if ((window as any).VANTA?.HALO) {
+          clearInterval(timer);
+          initVanta();
+        }
+      }, 100);
+    }
+
+    return () => {
+      if (timer) clearInterval(timer);
+      if (effectRef.current) {
+        try {
+          effectRef.current.destroy();
+        } catch {}
+        effectRef.current = null;
+      }
+    };
+  }, []);
+
+  return (
+    <div
+      ref={vantaRef}
+      className="absolute inset-0 z-0 overflow-hidden bg-[#431913]"
+    />
   );
 }
-
 
 export function Opening() {
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -50,23 +89,22 @@ export function Opening() {
     <section
       id="opening"
       aria-labelledby="opening-title"
-      className="relative flex min-h-[100svh] h-[100svh] flex-col justify-center items-center bg-[#F5F5F7] px-4 py-12 sm:py-16 pt-20 sm:pt-24 lg:px-8 text-center overflow-hidden"
+      className="relative flex min-h-[100svh] h-[100svh] flex-col justify-center items-center bg-[#431913] px-4 py-12 sm:py-16 pt-20 sm:pt-24 lg:px-8 text-center overflow-hidden"
     >
       <HeroBackground />
 
-
       <PhysicsButtons titleRef={titleRef} />
 
-      <div className="relative z-20 mx-auto w-full max-w-7xl flex flex-col items-center">
+      <div className="relative z-20 mx-auto w-full max-w-7xl flex flex-col items-center pointer-events-none">
         <h1
           id="opening-title"
           ref={titleRef}
-          className="flex flex-col items-center gap-1.5 sm:gap-3 md:gap-4 text-[clamp(32px,6.8vw,72px)] font-display font-bold tracking-[-0.035em] leading-[1.15] sm:leading-[1.2] pb-2 sm:pb-3 pt-1 px-2 max-w-5xl"
+          className="pointer-events-auto flex flex-col items-center gap-1.5 sm:gap-3 md:gap-4 text-[clamp(32px,6.8vw,72px)] font-display font-bold tracking-[-0.035em] leading-[1.15] sm:leading-[1.2] pb-2 sm:pb-3 pt-1 px-2 max-w-5xl"
         >
           <span
             className="block"
             style={{
-              backgroundImage: "linear-gradient(135deg, #B45309 0%, #D97706 40%, #EA580C 100%)",
+              backgroundImage: "linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 45%, #FED7AA 100%)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
             }}
@@ -76,10 +114,9 @@ export function Opening() {
           <span className="block">
             <span
               style={{
-                backgroundImage: "linear-gradient(135deg, #881337 0%, #991B1B 100%)",
+                backgroundImage: "linear-gradient(135deg, #FB7185 0%, #F43F5E 55%, #FDA4AF 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
-                WebkitTextStroke: "0.5px rgba(81, 4, 0, 0.45)",
               }}
               className="font-extrabold"
             >
@@ -87,7 +124,7 @@ export function Opening() {
             </span>
             <span
               style={{
-                backgroundImage: "linear-gradient(135deg, #C2410C 0%, #DC2626 45%, #7C3AED 100%)",
+                backgroundImage: "linear-gradient(135deg, #FDE047 0%, #FB923C 45%, #F43F5E 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
               }}
@@ -98,7 +135,7 @@ export function Opening() {
           <span
             className="block"
             style={{
-              backgroundImage: "linear-gradient(135deg, #C2410C 0%, #DC2626 45%, #7C3AED 100%)",
+              backgroundImage: "linear-gradient(135deg, #FDE047 0%, #FB923C 45%, #F43F5E 100%)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
             }}
@@ -112,7 +149,7 @@ export function Opening() {
       <a
         href="#case-studies"
         aria-label="Scroll to Case Studies"
-        className="absolute bottom-5 sm:bottom-6 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-1.5 text-[#86868B] hover:text-[#1D1D1F] transition-colors group cursor-pointer select-none"
+        className="absolute bottom-5 sm:bottom-6 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-1.5 text-white/60 hover:text-white transition-colors group cursor-pointer select-none"
       >
         <span className="text-[10px] sm:text-[11px] font-display font-medium tracking-widest uppercase opacity-75 group-hover:opacity-100 transition-opacity">
           Case Studies
